@@ -1,6 +1,6 @@
 NAME = philosophers
 VEC_FILES = vec_apply vec_free vec_insert vec_remove vec_set vec_count vec_get vec_pop vec_replace vec_find vec_init vec_push vec_resize ft_mem
-FILES = main $(VEC_FILES)
+FILES = main utils/init utils/vector create/index.c $(VEC_FILES)
 SRC_DIR = src
 INCLUDES = -I includes
 BUILD_DIR = build
@@ -35,6 +35,10 @@ fclean: clean
 	@echo "$(YELLOW)⏳ Cleaning executable... $(NC)\n"
 	@rm -f $(NAME)
 	@echo "$(RED)🗑️	Removed $(NAME) executable $(NC)\n"
+
+norm:
+	@echo "$(YELLOW)⏳ Norminette... $(NC)\n"
+	@norminette src includes
 
 re: fclean all
 
