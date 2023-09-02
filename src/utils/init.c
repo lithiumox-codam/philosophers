@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/08/04 01:05:55 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/02 16:17:43 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,26 +28,71 @@ void	*push_mutexes(t_vector *vec, size_t count)
 	return (vec->data);
 }
 
+static bool	check_input(t_data *data, int ac)
+{
+	if (data->philo_count == 0 || data->philo_count > 200)
+		return (false);
+	if (data->time_to_die == 0 || data->time_to_die > 2147483647)
+		return (false);
+	if (data->time_to_eat == 0 || data->time_to_eat > 2147483647)
+		return (false);
+	if (data->time_to_sleep == 0 || data->time_to_sleep > 2147483647)
+		return (false);
+	if (ac > 5 && (data->eat_count == 0 || data->eat_count > 2147483647))
+		return (false);
+	return (true);
+}
+
+/**
+ * @brief Checks if the input is valid
+ *
+ * @param ac The amount of arguments
+ * @param av The arguments
+ * @return true When the input is valid
+ * @return false When the input is invalid
+ */
+static bool	check_strings(int ac, char **av)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (i < ac)
+	{
+		j = 0;
+		while (av[i][j])
+		{
+			if ((av[i][j] >= '0' && av[i][j] <= '9') || j > 10)
+				return (false);
+			j++;
+		}
+		i++;
+	}
+	return (true);
+}
+
+static bool	parse_input(t_data *data, int ac, char **av)
+{
+	if (check_strings(ac, av))
+		return (false);
+	data->philo_count = atost(av[1]);
+	data->time_to_die = atost(av[2]);
+	data->time_to_eat = atost(av[3]);
+	data->time_to_sleep = atost(av[4]);
+	if (ac == 6)
+		data->eat_count = atost(av[5]);
+	return (check_input(data, ac));
+}
+
 /**
  * @brief The function to initialize all used vectors & mutexes
  *
  * @param data The data struct to initialize
  * @return bool Whether the initialization was successful
  */
-bool	init(t_global *data)
+bool	init(t_data *data, int ac, char **av)
 {
-	if (!vec_init(&data->mutexes.forks, data->philo_count,
-			sizeof(pthread_mutex_t), NULL) || !vec_init(&data->mutexes.print, 1,
-			sizeof(pthread_mutex_t), NULL) || !vec_init(&data->mutexes.dead, 1,
-			sizeof(pthread_mutex_t), NULL) || !vec_init(&data->mutexes.eat, 1,
-			sizeof(pthread_mutex_t), NULL)
-		|| !vec_init(&data->mutexes.eat_count, 1, sizeof(pthread_mutex_t),
-			NULL))
-		return (false);
-	if (!push_mutexes(&data->mutexes.forks, data->philo_count)
-		|| !vec_push(&data->mutexes.print, NULL)
-		|| !vec_push(&data->mutexes.dead, NULL) || !vec_push(&data->mutexes.eat,
-			NULL) || !vec_push(&data->mutexes.eat_count, NULL))
-		return (false);
+	if (!parse_input(data, ac, av))
+		return (printf("ERROR: Wrong input\n"), false);
 	return (true);
 }

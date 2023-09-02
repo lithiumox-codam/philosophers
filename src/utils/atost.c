@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   atost.c                                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/02 16:19:28 by mdekker       ########   odam.nl         */
+/*   Created: 2023/09/02 14:55:35 by mdekker       #+#    #+#                 */
+/*   Updated: 2023/09/02 15:05:40 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-int	main(int ac, char **av)
+/**
+ * @brief Converts a string to a size_t
+ *
+ * @param str The string to convert
+ * @return size_t The converted string
+ */
+size_t	atost(char *str)
 {
-	t_data	data;
+	size_t	i;
+	size_t	res;
 
-	data = (t_data){};
-	if (ac < 5 || ac > 6)
-		return (printf("Error: wrong amount of arguments\n"), 1);
-	init(&data, ac, av);
-	return (0);
+	i = 0;
+	res = 0;
+	while (str[i] != '\0')
+	{
+		res = res * 10 + str[i] - '0';
+		i++;
+	}
+	return (res);
 }

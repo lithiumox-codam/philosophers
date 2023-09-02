@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/08/05 22:40:22 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/02 15:15:16 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef struct s_mutexes
  * enough
  * @param start The time at which the program started
  * @note The mutexes are stored in a vector, so they can be accessed by id
- * this is done to
+ * this is done to prevent having to pass the mutexes to every function
  */
 typedef struct s_data
 {
@@ -73,7 +73,7 @@ typedef struct s_data
 	size_t			philo_eaten;
 	t_mutexes		mutexes;
 	struct timeval	start;
-}					t_global;
+}					t_data;
 
 typedef enum e_philo_state
 {
@@ -93,5 +93,11 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork;
 	struct timeval	last_eaten;
 }					t_philo;
+
+/**
+ * Functions
+ */
+size_t				atost(char *str);
+bool				init(t_data *data, int ac, char **av);
 
 #endif
