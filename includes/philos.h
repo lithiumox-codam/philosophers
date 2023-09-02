@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/02 15:15:16 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/02 16:51:24 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,17 @@ typedef enum e_philo_state
 	STOPING
 }					t_philo_state;
 
+/**
+ * @brief The struct containing all data needed for a philosopher
+ *
+ * @param id The id of the philosopher
+ * @param state The state of the philosopher
+ * @param thread The thread of the philosopher
+ * @param left_fork The mutex of the left fork
+ * @param right_fork The mutex of the right fork
+ * @param last_eaten The time at which the philosopher last ate
+ * @note The mutexes are stored in a vector, so they can be accessed by id
+ */
 typedef struct s_philo
 {
 	size_t			id;
