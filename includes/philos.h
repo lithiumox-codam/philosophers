@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/03 18:24:03 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/03 22:50:24 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_data
 	size_t			eat_count;
 	size_t			dead;
 	size_t			philo_eaten;
+	t_vector		*philos;
 	t_mutexes		mutexes;
 	struct timeval	start;
 }					t_data;
@@ -117,18 +118,25 @@ typedef struct s_philo
 /**
  * Functions
  */
+void				philo_loop(t_philo *philo, t_data *data);
 size_t				atost(char *str);
 bool				init(t_data *data, int ac, char **av);
 bool				parse_input(t_data *data, int ac, char **av);
 void				print_error(char *error_msg);
 void				free_mutex(void *mutexes);
-void				ft_bzero(void *s, size_t n);
-void				*ft_memmove(void *dst, const void *src, size_t len);
+void				free_philo(void *philo);
 
 /**
  * Time functions
  */
 struct timeval		current_time(void);
 size_t				time_diff(struct timeval start, struct timeval end);
+
+/**
+ * Debug functions
+ */
+void				print_vec(t_vector *vec, void (*print)(void *));
+void				print_mutex(void *mutex);
+void				print_philo(void *philo);
 
 #endif
