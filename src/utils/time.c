@@ -17,10 +17,22 @@
  *
  * @return size_t The current time in milliseconds
  */
-size_t	get_time(void)
+struct timeval	current_time(void)
 {
-	struct timeval time;
+	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+	return (time);
+}
+
+/**
+ * @brief Gets the time difference between two times in milliseconds
+ *
+ * @param start The start time
+ * @param end The end time
+ * @return size_t The time difference in milliseconds
+ */
+size_t	time_diff(struct timeval start, struct timeval end)
+{
+	return (end.tv_usec - start.tv_usec + (end.tv_sec - start.tv_sec) * 1000);
 }

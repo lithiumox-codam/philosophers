@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 16:08:20 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/08/03 16:15:43 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/03 18:26:33 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,34 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 	else if (to > from)
 		ft_loop(to, from, len, 1);
 	return (dst);
+}
+/**
+ * @brief Copies n bytes from src to dst
+ *
+ * @note The two strings may overlap
+ * @param dst Address of memory to copy to
+ * @param src Address of memory to copy from
+ */
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*str;
+
+	str = s;
+	while (n > 0)
+	{
+		*str = (unsigned char)c;
+		str++;
+		n--;
+	}
+	return (s);
+}
+/**
+ * @brief Sets the first n bytes of the memory area pointed to by s to zero
+ * @param s Address of memory to set
+ * @param n Amount of bytes to set
+ */
+void	*ft_bzero(void *s, size_t n)
+{
+	s = ft_memset(s, 0, n);
+	return (s);
 }

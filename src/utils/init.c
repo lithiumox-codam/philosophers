@@ -6,82 +6,37 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/02 16:17:43 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/03 18:20:48 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-void	*push_mutexes(t_vector *vec, size_t count)
+bool	initialize_mutexes(t_data *data)
 {
+	t_mutexes		tmp;
 	size_t			i;
-	pthread_mutex_t	*mutex;
+	pthread_mutex_t	*fork;
 
+	pthread_mutex_init(&tmp.print, NULL);
+	pthread_mutex_init(&tmp.dead, NULL);
+	pthread_mutex_init(&tmp.eat, NULL);
+	pthread_mutex_init(&tmp.eat_count, NULL);
+	vec_init(tmp.forks, data->philo_count, sizeof(pthread_mutex_t), free_mutex);
+	if (!tmp.forks)
+		return (false);
 	i = 0;
-	while (i < count)
+	while (i < data->philo_count)
 	{
-		mutex = malloc(sizeof(pthread_mutex_t));
-		if (!mutex || !vec_push(vec, mutex))
-			return (NULL);
+		fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+		if (!fork)
+			return (false);
+		pthread_mutex_init(fork, NULL);
+		vec_push(tmp.forks, fork);
 		i++;
 	}
-	return (vec->data);
-}
-
-static bool	check_input(t_data *data, int ac)
-{
-	if (data->philo_count == 0 || data->philo_count > 200)
-		return (false);
-	if (data->time_to_die == 0 || data->time_to_die > 2147483647)
-		return (false);
-	if (data->time_to_eat == 0 || data->time_to_eat > 2147483647)
-		return (false);
-	if (data->time_to_sleep == 0 || data->time_to_sleep > 2147483647)
-		return (false);
-	if (ac > 5 && (data->eat_count == 0 || data->eat_count > 2147483647))
-		return (false);
+	data->mutexes = tmp;
 	return (true);
-}
-
-/**
- * @brief Checks if the input is valid
- *
- * @param ac The amount of arguments
- * @param av The arguments
- * @return true When the input is valid
- * @return false When the input is invalid
- */
-static bool	check_strings(int ac, char **av)
-{
-	int	i;
-	int	j;
-
-	i = 1;
-	while (i < ac)
-	{
-		j = 0;
-		while (av[i][j])
-		{
-			if ((av[i][j] >= '0' && av[i][j] <= '9') || j > 10)
-				return (false);
-			j++;
-		}
-		i++;
-	}
-	return (true);
-}
-
-static bool	parse_input(t_data *data, int ac, char **av)
-{
-	if (check_strings(ac, av))
-		return (false);
-	data->philo_count = atost(av[1]);
-	data->time_to_die = atost(av[2]);
-	data->time_to_eat = atost(av[3]);
-	data->time_to_sleep = atost(av[4]);
-	if (ac == 6)
-		data->eat_count = atost(av[5]);
-	return (check_input(data, ac));
 }
 
 /**
@@ -93,6 +48,8 @@ static bool	parse_input(t_data *data, int ac, char **av)
 bool	init(t_data *data, int ac, char **av)
 {
 	if (!parse_input(data, ac, av))
-		return (printf("ERROR: Wrong input\n"), false);
+		return (false);
+	if (!initialize_mutexes(data))
+		return (false);
 	return (true);
 }

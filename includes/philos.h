@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/02 16:51:24 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/03 18:24:03 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef struct s_mutexes
  * @param time_to_eat The time in ms a philosopher takes to eat
  * @param time_to_sleep The time in ms a philosopher takes to sleep
  * @param eat_count The amount of times a philosopher needs to eat before
- * stopping
+ * stopping (0 = infinite)
  * @param dead Whether a philosopher has died
  * @param philo_eaten The amount of times a philosopher has eaten
  * @param forks The mutexes representing the forks
@@ -75,14 +75,21 @@ typedef struct s_data
 	struct timeval	start;
 }					t_data;
 
-typedef enum e_philo_state
+/**
+ * @brief The enum containing all states a philosopher can be in
+ *
+ * @param THINKING The philosopher is thinking
+ * @param EATING The philosopher is eating
+ * @param SLEEPING The philosopher is sleeping
+ * @param DEAD The philosopher is dead
+ */
+typedef enum e_state
 {
 	THINKING,
 	EATING,
 	SLEEPING,
-	DEAD,
-	STOPING
-}					t_philo_state;
+	DEAD
+}					t_state;
 
 /**
  * @brief The struct containing all data needed for a philosopher
@@ -98,11 +105,13 @@ typedef enum e_philo_state
 typedef struct s_philo
 {
 	size_t			id;
-	t_philo_state	state;
+	t_state			state;
+	size_t			eat_count;
 	pthread_t		thread;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	struct timeval	last_eaten;
+	t_data			*data;
 }					t_philo;
 
 /**
@@ -110,5 +119,16 @@ typedef struct s_philo
  */
 size_t				atost(char *str);
 bool				init(t_data *data, int ac, char **av);
+bool				parse_input(t_data *data, int ac, char **av);
+void				print_error(char *error_msg);
+void				free_mutex(void *mutexes);
+void				ft_bzero(void *s, size_t n);
+void				*ft_memmove(void *dst, const void *src, size_t len);
+
+/**
+ * Time functions
+ */
+struct timeval		current_time(void);
+size_t				time_diff(struct timeval start, struct timeval end);
 
 #endif

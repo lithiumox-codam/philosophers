@@ -21,8 +21,6 @@
  */
 void	*vec_get(t_vector *vec, size_t index)
 {
-	if (index < 0)
-		return (NULL);
 	if (index >= vec->length)
 		return (NULL);
 	return (vec->data + index * vec->type_size);
