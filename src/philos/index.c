@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/03 22:51:47 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/03 23:01:57 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	philo_loop(t_philo *philo, t_data *data)
 {
 	while (1)
 	{
+		printf("philo loop\n");
 		if (philo->state == THINKING)
 			philo_think(philo, data);
 		else if (philo->state == EATING)

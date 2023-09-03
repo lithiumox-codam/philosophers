@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/03 22:45:53 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/03 23:04:36 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ static bool	init_philos(t_data *data)
 		philo->data = data;
 		philo->last_eaten = current_time();
 		philo->eat_count = 0;
+		philo->state = THINKING;
 		philo->data = data;
 		if (!vec_push(data->philos, philo))
 			return (print_error("Vector push failed with philo!"), false);
