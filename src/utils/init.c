@@ -6,11 +6,20 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/03 23:04:36 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/04 15:59:09 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
+
+pthread_mutex_t	*init_mutex(pthread_mutex_t *mutex)
+{
+	mutex = malloc(sizeof(pthread_mutex_t));
+	if (!mutex)
+		return (NULL);
+	pthread_mutex_init(mutex, NULL);
+	return (mutex);
+}
 
 bool	initialize_mutexes(t_data *data)
 {
@@ -20,20 +29,22 @@ bool	initialize_mutexes(t_data *data)
 
 	tmp = &data->mutexes;
 	i = 0;
-	pthread_mutex_init(&(tmp->print), NULL);
-	pthread_mutex_init(&(tmp->dead), NULL);
-	pthread_mutex_init(&(tmp->eat), NULL);
-	pthread_mutex_init(&(tmp->eat_count), NULL);
+	tmp->print = init_mutex(tmp->print);
+	tmp->dead = init_mutex(tmp->dead);
+	tmp->eat = init_mutex(tmp->eat);
+	tmp->eat_count = init_mutex(tmp->eat_count);
+	tmp->philos_created = init_mutex(tmp->philos_created);
 	tmp->forks = malloc(sizeof(t_vector));
+	if (!tmp->print || !tmp->dead || !tmp->eat || !tmp->eat_count)
+		return (print_error("Initialization of mutexes failed!"), false);
 	if (!tmp->forks || !vec_init(tmp->forks, data->philo_count,
 			sizeof(pthread_mutex_t), free_mutex))
-		return (false);
+		return (print_error("Initialization of forks vector failed!"), false);
 	while (i < data->philo_count)
 	{
-		fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+		fork = init_mutex(fork);
 		if (!fork)
 			return (false);
-		pthread_mutex_init(fork, NULL);
 		vec_push(tmp->forks, fork);
 		i++;
 	}
@@ -61,8 +72,13 @@ static bool	init_philos(t_data *data)
 		philo->eat_count = 0;
 		philo->state = THINKING;
 		philo->data = data;
+		philo->left_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks, i);
+		philo->right_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks, (i
+					+ 1) % data->philo_count);
 		if (!vec_push(data->philos, philo))
 			return (print_error("Vector push failed with philo!"), false);
+		else
+			data->philos_created++;
 		i++;
 	}
 	return (true);

@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/03 22:50:24 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/04 16:40:37 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,11 @@
 typedef struct s_mutexes
 {
 	t_vector		*forks;
-	pthread_mutex_t	print;
-	pthread_mutex_t	dead;
-	pthread_mutex_t	eat;
-	pthread_mutex_t	eat_count;
+	pthread_mutex_t	*print;
+	pthread_mutex_t	*dead;
+	pthread_mutex_t	*eat;
+	pthread_mutex_t	*eat_count;
+	pthread_mutex_t	*philos_created;
 }					t_mutexes;
 /**
  * @brief The struct containing all data needed for the program
@@ -65,6 +66,7 @@ typedef struct s_mutexes
 typedef struct s_data
 {
 	size_t			philo_count;
+	size_t			philos_created;
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
@@ -118,13 +120,14 @@ typedef struct s_philo
 /**
  * Functions
  */
-void				philo_loop(t_philo *philo, t_data *data);
+void				philo_loop(t_philo *philo);
 size_t				atost(char *str);
 bool				init(t_data *data, int ac, char **av);
 bool				parse_input(t_data *data, int ac, char **av);
 void				print_error(char *error_msg);
 void				free_mutex(void *mutexes);
 void				free_philo(void *philo);
+void				print_status(t_philo *philo, char *status);
 
 /**
  * Time functions
