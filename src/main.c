@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/04 12:58:15 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/05 18:41:37 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	main(int ac, char **av)
 {
 	t_data	data;
 
-	ft_bzero(&data, sizeof(t_data));
+	ft_memset(&data, 0, sizeof(t_data));
 	if (ac < 5 || ac > 6)
 		return (print_error("Wrong amount of arguments"), 1);
 	if (!init(&data, ac, av))

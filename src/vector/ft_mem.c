@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 16:08:20 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/03 18:26:33 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/05 18:42:43 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 		ft_loop(to, from, len, 1);
 	return (dst);
 }
+
 /**
  * @brief Copies n bytes from src to dst
  *
@@ -99,13 +100,18 @@ void	*ft_memset(void *s, int c, size_t n)
 	}
 	return (s);
 }
-/**
- * @brief Sets the first n bytes of the memory area pointed to by s to zero
- * @param s Address of memory to set
- * @param n Amount of bytes to set
- */
-void	*ft_bzero(void *s, size_t n)
+
+void	*ft_realloc(void *ptr, size_t size)
 {
-	s = ft_memset(s, 0, n);
-	return (s);
+	void	*new;
+
+	new = malloc(size);
+	if (!new)
+		return (NULL);
+	if (ptr != NULL)
+	{
+		ft_memcpy(new, ptr, size);
+		free(ptr);
+	}
+	return (new);
 }

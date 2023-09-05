@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/04 15:59:09 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/05 19:04:35 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ static bool	init_philos(t_data *data)
 		philo->data = data;
 		philo->last_eaten = current_time();
 		philo->eat_count = 0;
-		philo->state = THINKING;
+		if (i % 2 == 0)
+			philo->state = THINKING;
+		else
+			philo->state = EATING;
 		philo->data = data;
 		philo->left_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks, i);
 		philo->right_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks, (i

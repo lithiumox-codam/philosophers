@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/15 22:20:37 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/03 18:31:03 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/05 18:41:00 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_vector
 }			t_vector;
 
 void		*vec_init(t_vector *vec, size_t capacity, size_t type_size,
-			void (*free)(void *));
+				void (*free)(void *));
 void		*vec_get(t_vector *vec, size_t index);
 void		*vec_set(t_vector *vec, size_t index, void *data);
 void		*vec_pop(t_vector *vec);
@@ -72,5 +72,5 @@ size_t		vec_count(t_vector *vec, bool (*f)(void *));
 void		*ft_memmove(void *dst, const void *src, size_t len);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 void		*ft_memset(void *b, int c, size_t len);
-void		*ft_bzero(void *s, size_t n);
+void		*ft_realloc(void *ptr, size_t size);
 #endif

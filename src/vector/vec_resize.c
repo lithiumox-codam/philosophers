@@ -30,7 +30,7 @@ bool	vec_resize(t_vector *vec, size_t new_length)
 
 	if (new_length == 0 || new_length < vec->length)
 		return (false);
-	new = realloc(vec->data, new_length * vec->type_size);
+	new = ft_realloc(vec->data, new_length * vec->type_size);
 	if (!new)
 		return (false);
 	vec->data = new;

@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/04 17:39:44 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/05 17:20:32 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static void	wait_ms(long ms)
 	start = get_time();
 	while (1)
 	{
+		usleep(200);
 		current = get_time();
 		time_elapsed = (current.tv_sec * 1000 + current.tv_usec / 1000)
 			- (start.tv_sec * 1000 + start.tv_usec / 1000);
@@ -56,9 +57,7 @@ static void	philo_think(t_philo *philo)
 	t_data	*tmp;
 
 	tmp = philo->data;
-	pthread_mutex_lock(tmp->mutexes.print);
 	print_status(philo, "is thinking");
-	pthread_mutex_unlock(tmp->mutexes.print);
 	wait_ms(tmp->time_to_sleep);
 	philo->state = EATING;
 }
@@ -81,9 +80,7 @@ static void	philo_eat(t_philo *philo)
 		pthread_mutex_unlock(tmp->mutexes.print);
 		return ;
 	}
-	pthread_mutex_lock(tmp->mutexes.print);
 	print_status(philo, "is eating");
-	pthread_mutex_unlock(tmp->mutexes.print);
 	philo->last_eaten = get_time();
 	philo->eat_count++;
 	wait_ms(tmp->time_to_eat);
@@ -101,9 +98,7 @@ static void	philo_sleep(t_philo *philo)
 	t_data	*tmp;
 
 	tmp = philo->data;
-	pthread_mutex_lock(tmp->mutexes.print);
 	print_status(philo, "is sleeping");
-	pthread_mutex_unlock(tmp->mutexes.print);
 	wait_ms(tmp->time_to_sleep);
 	philo->state = THINKING;
 }
@@ -115,8 +110,9 @@ static bool	check_start(t_data *data)
 	pthread_mutex_lock(data->mutexes.philos_created);
 	created = data->philos_created;
 	pthread_mutex_unlock(data->mutexes.philos_created);
-	if
-		"P{cv b                    }"
+	if (created == data->philo_count)
+		return (gettimeofday(&data->start, NULL), true);
+	return (false);
 }
 
 /**

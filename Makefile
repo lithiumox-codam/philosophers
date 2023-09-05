@@ -8,7 +8,7 @@ vpath %.c $(SRC_DIR) $(SRC_DIR)/vector
 SRCS = $(addsuffix .c, $(FILES))
 OBJ = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror
 
 
 GREEN=\033[0;32m
