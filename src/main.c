@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/05 18:41:37 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/07 22:58:26 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ void	run_simulation(t_data *data)
 	t_philo	*philo;
 
 	i = 0;
+	data->start = current_time();
 	while (i < data->philo_count)
 	{
-		philo = vec_get(data->philos, i);
+		philo = (t_philo *)vec_get(data->philos, i);
 		if (pthread_create(&philo->thread, NULL, (void *)philo_loop,
 				philo) != 0)
 			return (print_error("Failed to create thread"));
@@ -29,7 +30,7 @@ void	run_simulation(t_data *data)
 	i = 0;
 	while (i < data->philo_count)
 	{
-		philo = vec_get(data->philos, i);
+		philo = (t_philo *)vec_get(data->philos, i);
 		if (pthread_join(philo->thread, NULL) != 0)
 			return (print_error("Failed to join thread"));
 		i++;

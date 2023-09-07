@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/05 19:04:35 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/07 22:51:18 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,35 +54,31 @@ bool	initialize_mutexes(t_data *data)
 static bool	init_philos(t_data *data)
 {
 	t_philo	*philo;
-	size_t	i;
 
-	i = 0;
 	data->philos = malloc(sizeof(t_vector));
 	if (!data->philos || !vec_init(data->philos, data->philo_count,
 			sizeof(t_philo), free_philo))
 		return (false);
-	while (i < data->philo_count)
+	while (data->philos_created < data->philo_count)
 	{
 		philo = (t_philo *)malloc(sizeof(t_philo));
 		if (!philo)
 			return (print_error("Allocation of philo failed!"), false);
-		philo->id = i;
 		philo->data = data;
 		philo->last_eaten = current_time();
 		philo->eat_count = 0;
-		if (i % 2 == 0)
+		if (data->philos_created % 2 == 0)
 			philo->state = THINKING;
 		else
 			philo->state = EATING;
 		philo->data = data;
-		philo->left_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks, i);
-		philo->right_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks, (i
-					+ 1) % data->philo_count);
+		philo->left_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks,
+				data->philos_created);
+		philo->right_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks,
+				(data->philos_created + 1) % data->philo_count);
 		if (!vec_push(data->philos, philo))
 			return (print_error("Vector push failed with philo!"), false);
-		else
-			data->philos_created++;
-		i++;
+		data->philos_created++;
 	}
 	return (true);
 }

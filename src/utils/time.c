@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/02 16:20:41 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/07 23:13:52 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,27 @@ struct timeval	current_time(void)
 	return (time);
 }
 
-/**
- * @brief Gets the time difference between two times in milliseconds
- *
- * @param start The start time
- * @param end The end time
- * @return size_t The time difference in milliseconds
- */
-size_t	time_diff(struct timeval start, struct timeval end)
+size_t	get_time_diff(struct timeval start)
 {
-	return (end.tv_usec - start.tv_usec + (end.tv_sec - start.tv_sec) * 1000);
+	struct timeval	now;
+	size_t			diff;
+
+	gettimeofday(&now, NULL);
+	diff = (now.tv_sec - start.tv_sec) * 1000;
+	diff += (now.tv_usec - start.tv_usec) / 1000;
+	return (diff);
+}
+
+/**
+ * @brief Function to wait for a semi certain amount of time
+ * @param time The time to wait in milliseconds
+ * @note This function is not very accurate (on purpose)
+ */
+void	wait_for(size_t time)
+{
+	struct timeval	start;
+
+	start = current_time();
+	while ((get_time_diff(start) - start.tv_usec) < time)
+		usleep(time / 10);
 }

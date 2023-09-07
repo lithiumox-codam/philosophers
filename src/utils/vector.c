@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:57:15 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/05 18:46:33 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/07 23:06:47 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,23 @@ size_t	philo_id(void *ptr, t_vector *vec)
 	size_t	id;
 
 	if (vec->length == 0 || vec->data == NULL)
-		return (-1);
+		return (0);
 	id = (size_t)((t_philo *)ptr - (t_philo *)vec->data);
-	return (id);
+	return (id + 1);
+}
+
+void	take_forks(t_philo *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	printf("%zu %zu has taken a fork\n", start_diff(philo), philo_id(philo,
+			philo->data->philos));
+	pthread_mutex_lock(philo->right_fork);
+	printf("%zu %zu has taken a fork\n", start_diff(philo), philo_id(philo,
+			philo->data->philos));
+}
+
+void	drop_forks(t_philo *philo)
+{
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
 }

@@ -1,17 +1,23 @@
 {
 	"configurations": [
-	{
-		"name": "(lldb) Launch",
-		"type": "cppdbg",
-		"request": "launch",
-		"program": "${workspaceFolder}/philosophers",
-		"args": ["1", "1", "1", "1"],
-		"stopAtEntry": false,
-		"cwd": "${fileDirname}",
-		"environment": [],
-		"externalConsole": false,
-		"MIMode": "lldb",
-		"preLaunchTask": "make"
-	}
+		{
+			"name": "(lldb) Launch",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/philosophers",
+			"args": [
+				"1",
+				"1",
+				"1",
+				"1"
+			],
+			"stopAtEntry": false,
+			"cwd": "${fileDirname}",
+			"miDebuggerPath": "/usr/bin/lldb",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"preLaunchTask": "make"
+		}
 	]
 }

@@ -6,45 +6,11 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/05 17:20:32 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/07 23:10:52 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
-
-/**
- * @brief The time in ms since the start of the program
- *
- */
-static struct timeval	get_time(void)
-{
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return (time);
-}
-
-/**
- * @brief A function to wait for a certain amount of time
- *
- */
-static void	wait_ms(long ms)
-{
-	struct timeval	start;
-	struct timeval	current;
-	long			time_elapsed;
-
-	start = get_time();
-	while (1)
-	{
-		usleep(200);
-		current = get_time();
-		time_elapsed = (current.tv_sec * 1000 + current.tv_usec / 1000)
-			- (start.tv_sec * 1000 + start.tv_usec / 1000);
-		if (time_elapsed >= ms)
-			return ;
-	}
-}
 
 /**
  * @brief The think state of the philosopher
@@ -54,11 +20,7 @@ static void	wait_ms(long ms)
  */
 static void	philo_think(t_philo *philo)
 {
-	t_data	*tmp;
-
-	tmp = philo->data;
-	print_status(philo, "is thinking");
-	wait_ms(tmp->time_to_sleep);
+	print_status(philo);
 	philo->state = EATING;
 }
 
@@ -70,20 +32,12 @@ static void	philo_think(t_philo *philo)
  */
 static void	philo_eat(t_philo *philo)
 {
-	t_data	*tmp;
-
-	tmp = philo->data;
-	if (philo->state == DEAD)
-	{
-		pthread_mutex_lock(tmp->mutexes.print);
-		printf("%zu has died\n", philo->id);
-		pthread_mutex_unlock(tmp->mutexes.print);
-		return ;
-	}
-	print_status(philo, "is eating");
-	philo->last_eaten = get_time();
+	take_forks(philo);
+	print_status(philo);
+	philo->last_eaten = current_time();
 	philo->eat_count++;
-	wait_ms(tmp->time_to_eat);
+	wait_for(philo->data->time_to_eat);
+	drop_forks(philo);
 	philo->state = SLEEPING;
 }
 
@@ -95,24 +49,9 @@ static void	philo_eat(t_philo *philo)
  */
 static void	philo_sleep(t_philo *philo)
 {
-	t_data	*tmp;
-
-	tmp = philo->data;
-	print_status(philo, "is sleeping");
-	wait_ms(tmp->time_to_sleep);
+	print_status(philo);
+	wait_for(philo->data->time_to_sleep);
 	philo->state = THINKING;
-}
-
-static bool	check_start(t_data *data)
-{
-	size_t	created;
-
-	pthread_mutex_lock(data->mutexes.philos_created);
-	created = data->philos_created;
-	pthread_mutex_unlock(data->mutexes.philos_created);
-	if (created == data->philo_count)
-		return (gettimeofday(&data->start, NULL), true);
-	return (false);
 }
 
 /**
@@ -123,8 +62,6 @@ static bool	check_start(t_data *data)
  */
 void	philo_loop(t_philo *philo)
 {
-	if (!check_start(philo->data))
-		return ;
 	while (1)
 	{
 		if (philo->state == THINKING)
@@ -133,5 +70,7 @@ void	philo_loop(t_philo *philo)
 			philo_eat(philo);
 		else if (philo->state == SLEEPING)
 			philo_sleep(philo);
+		else if (philo->state == DEAD)
+			return ;
 	}
 }

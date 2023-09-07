@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/04 16:40:37 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/09/07 23:08:34 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ typedef enum e_state
  */
 typedef struct s_philo
 {
-	size_t			id;
 	t_state			state;
 	size_t			eat_count;
 	pthread_t		thread;
@@ -121,19 +120,24 @@ typedef struct s_philo
  * Functions
  */
 void				philo_loop(t_philo *philo);
+size_t				philo_id(void *ptr, t_vector *vec);
 size_t				atost(char *str);
 bool				init(t_data *data, int ac, char **av);
 bool				parse_input(t_data *data, int ac, char **av);
 void				print_error(char *error_msg);
 void				free_mutex(void *mutexes);
 void				free_philo(void *philo);
-void				print_status(t_philo *philo, char *status);
+void				print_status(t_philo *philo);
+size_t				start_diff(t_philo *philo);
+void				take_forks(t_philo *philo);
+void				drop_forks(t_philo *philo);
 
 /**
  * Time functions
  */
 struct timeval		current_time(void);
 size_t				time_diff(struct timeval start, struct timeval end);
+void				wait_for(size_t time);
 
 /**
  * Debug functions
