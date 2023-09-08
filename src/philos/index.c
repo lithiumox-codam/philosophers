@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/07 23:10:52 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/08 14:28:42 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ static void	philo_sleep(t_philo *philo)
  */
 void	philo_loop(t_philo *philo)
 {
+	if (philo->state == THINKING)
+		wait_for(philo->data->time_to_eat / 2);
 	while (1)
 	{
 		if (philo->state == THINKING)

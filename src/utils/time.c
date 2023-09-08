@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/07 23:13:52 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/08 14:32:24 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,6 @@ void	wait_for(size_t time)
 	struct timeval	start;
 
 	start = current_time();
-	while ((get_time_diff(start) - start.tv_usec) < time)
-		usleep(time / 10);
+	while (get_time_diff(start) < time)
+		usleep(200);
 }

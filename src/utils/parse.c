@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 22:57:32 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/07 23:19:18 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/08 14:01:21 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	print_error(char *error_msg)
 
 static bool	check_input(t_data *data, int ac)
 {
-	if (data->philo_count == 0 || data->philo_count > 5000)
-		return (print_error("Philo maximum is 5000"), false);
+	if (data->philo_count == 0 || data->philo_count > 2047)
+		return (print_error("Philo maximum is 2047"), false);
 	if (data->time_to_die == 0 || data->time_to_die > 2147483647)
 		return (print_error("Invalid time to die"), false);
 	if (data->time_to_eat == 0 || data->time_to_eat > 2147483647)

@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:57:15 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/07 23:06:47 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/08 14:24:57 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,13 @@ size_t	philo_id(void *ptr, t_vector *vec)
 
 void	take_forks(t_philo *philo)
 {
+	t_vector	*p;
+
+	p = philo->data->philos;
 	pthread_mutex_lock(philo->left_fork);
-	printf("%zu %zu has taken a fork\n", start_diff(philo), philo_id(philo,
-			philo->data->philos));
+	printf("%zu %zu has taken a fork\n", start_diff(philo), philo_id(philo, p));
 	pthread_mutex_lock(philo->right_fork);
-	printf("%zu %zu has taken a fork\n", start_diff(philo), philo_id(philo,
-			philo->data->philos));
+	printf("%zu %zu has taken a fork\n", start_diff(philo), philo_id(philo, p));
 }
 
 void	drop_forks(t_philo *philo)

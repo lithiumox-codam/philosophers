@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/07 22:51:18 by lithium       ########   odam.nl         */
+/*   Updated: 2023/09/08 13:57:00 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,10 @@ bool	initialize_mutexes(t_data *data)
 	return (true);
 }
 
+/**
+
+	* !TODO: Remove forks from philo and use the ID to get the forks from the vector
+*/
 static bool	init_philos(t_data *data)
 {
 	t_philo	*philo;
@@ -73,9 +77,11 @@ static bool	init_philos(t_data *data)
 			philo->state = EATING;
 		philo->data = data;
 		philo->left_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks,
-				data->philos_created);
+														data->philos_created);
 		philo->right_fork = (pthread_mutex_t *)vec_get(data->mutexes.forks,
-				(data->philos_created + 1) % data->philo_count);
+														(data->philos_created
+																+ 1)
+															% data->philo_count);
 		if (!vec_push(data->philos, philo))
 			return (print_error("Vector push failed with philo!"), false);
 		data->philos_created++;
