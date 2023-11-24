@@ -6,23 +6,11 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/08 14:28:42 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/24 17:41:07 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
-
-/**
- * @brief The think state of the philosopher
- *
- * @param philo The philosopher
- * @param data The data struct
- */
-static void	philo_think(t_philo *philo)
-{
-	print_status(philo);
-	philo->state = EATING;
-}
 
 /**
  * @brief The eat state of the philosopher
@@ -30,15 +18,19 @@ static void	philo_think(t_philo *philo)
  * @param philo The philosopher
  * @param data The data struct
  */
-static void	philo_eat(t_philo *philo)
+static bool	philo_eat(t_philo *philo)
 {
 	take_forks(philo);
-	print_status(philo);
+	if (!print_status(philo))
+		return (drop_forks(philo), false);
+	// Lock : Data races
 	philo->last_eaten = current_time();
 	philo->eat_count++;
-	wait_for(philo->data->time_to_eat);
+	// Unlock
+	wait_for(philo, philo->data->time_to_eat);
 	drop_forks(philo);
 	philo->state = SLEEPING;
+	return (true);
 }
 
 /**
@@ -47,11 +39,14 @@ static void	philo_eat(t_philo *philo)
  * @param philo The philosopher
  * @param data The data struct
  */
-static void	philo_sleep(t_philo *philo)
+static bool	philo_sleep(t_philo *philo)
 {
-	print_status(philo);
-	wait_for(philo->data->time_to_sleep);
+	if (!print_status(philo))
+		return (false);
+	wait_for(philo, philo->data->time_to_sleep);
+	printf("time: %zu\n", philo->data->time_to_sleep);
 	philo->state = THINKING;
+	return (true);
 }
 
 /**
@@ -63,16 +58,20 @@ static void	philo_sleep(t_philo *philo)
 void	philo_loop(t_philo *philo)
 {
 	if (philo->state == THINKING)
-		wait_for(philo->data->time_to_eat / 2);
+	{
+		if (!print_status(philo))
+			return ;
+		wait_for(philo, philo->data->time_to_eat / 2);
+	}
 	while (1)
 	{
-		if (philo->state == THINKING)
-			philo_think(philo);
-		else if (philo->state == EATING)
-			philo_eat(philo);
-		else if (philo->state == SLEEPING)
-			philo_sleep(philo);
-		else if (philo->state == DEAD)
+		if (!philo_eat(philo))
+			return ;
+		if (!philo_sleep(philo))
+			return ;
+		if (!print_status(philo))
+			return ;
+		if (philo->state == DEAD)
 			return ;
 	}
 }

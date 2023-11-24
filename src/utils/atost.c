@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 14:55:35 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/02 15:05:40 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/24 13:42:51 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
  *
  * @param str The string to convert
  * @return size_t The converted string
+ *
+ * @note Doesn't check for overflow or underflow it is assumed that the string
+ * is a valid number
  */
 size_t	atost(char *str)
 {

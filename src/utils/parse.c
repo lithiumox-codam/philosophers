@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 22:57:32 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/08 14:01:21 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/24 13:44:28 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,14 @@ void	print_error(char *error_msg)
 	printf("\033[1;31mERROR: %s\033[0m\n", error_msg);
 }
 
+/**
+ * @brief Basic bounds checker for the various input values
+ *
+ * @param data The data struct
+ * @param ac The amount of arguments
+ * @return true When the input is valid
+ * @return false When the input is invalid
+ */
 static bool	check_input(t_data *data, int ac)
 {
 	if (data->philo_count == 0 || data->philo_count > 2047)
@@ -34,6 +42,10 @@ static bool	check_input(t_data *data, int ac)
 
 /**
  * @brief Checks if the input is valid
+ *
+ * @note Checks if the string is not too long
+ * and if the string only contains numbers as
+ * to not trip up atost()
  *
  * @param ac The amount of arguments
  * @param av The arguments
@@ -60,6 +72,17 @@ static bool	check_strings(int ac, char **av)
 	return (true);
 }
 
+/**
+ * @brief Parses the input and stores it in the data struct
+ * Checks will be done before the program starts to run
+ * to prevent wasting time
+ *
+ * @param data The data struct
+ * @param ac The amount of arguments
+ * @param av The arguments
+ * @return true When the input is valid
+ * @return false When the input is invalids
+ */
 bool	parse_input(t_data *data, int ac, char **av)
 {
 	if (check_strings(ac, av))

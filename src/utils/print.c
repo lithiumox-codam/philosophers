@@ -6,7 +6,7 @@
 /*   By: lithium <lithium@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/07 22:42:36 by lithium       #+#    #+#                 */
-/*   Updated: 2023/09/08 14:18:41 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/24 17:37:48 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,23 @@ size_t	start_diff(t_philo *philo)
  *
  * @param philo The philosopher
  */
-void	print_status(t_philo *philo)
+bool	print_status(t_philo *philo)
 {
-	size_t		start_time;
-	t_vector	*philos;
+	size_t	start_time;
 
-	philos = philo->data->philos;
 	pthread_mutex_lock(philo->data->mutexes.print);
 	start_time = start_diff(philo);
+	if (!die_time_check(philo->last_eaten, philo))
+		return (false);
 	if (philo->state == THINKING)
-		printf("%zu %zu is thinking\n", start_time, philo_id(philo, philos));
+	{
+		printf("%zu %zu is thinking\n", start_time, philo->id + 1);
+		philo->state = EATING;
+	}
 	else if (philo->state == EATING)
-		printf("%zu %zu is eating\n", start_time, philo_id(philo, philos));
+		printf("%zu %zu is eating\n", start_time, philo->id + 1);
 	else if (philo->state == SLEEPING)
-		printf("%zu %zu is sleeping\n", start_time, philo_id(philo, philos));
-	else if (philo->state == DEAD)
-		printf("%zu %zu died\n", start_time, philo_id(philo, philos));
+		printf("%zu %zu is sleeping\n", start_time, philo->id + 1);
 	pthread_mutex_unlock(philo->data->mutexes.print);
+	return (true);
 }

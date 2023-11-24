@@ -6,7 +6,7 @@
 /*   By: lithium <lithium@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/03 18:09:25 by lithium       #+#    #+#                 */
-/*   Updated: 2023/09/05 19:02:02 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/24 14:39:53 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 
 void	free_mutex(void *mutex)
 {
+	pthread_mutex_destroy(mutex);
 	free(mutex);
 }

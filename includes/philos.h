@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/08 14:13:33 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/24 16:12:34 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,10 @@ typedef enum e_state
  */
 typedef struct s_philo
 {
+	size_t			id;
 	t_state			state;
 	size_t			eat_count;
 	pthread_t		thread;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
 	struct timeval	last_eaten;
 	t_data			*data;
 }					t_philo;
@@ -127,7 +126,7 @@ bool				parse_input(t_data *data, int ac, char **av);
 void				print_error(char *error_msg);
 void				free_mutex(void *mutexes);
 void				free_philo(void *philo);
-void				print_status(t_philo *philo);
+bool				print_status(t_philo *philo);
 size_t				start_diff(t_philo *philo);
 void				take_forks(t_philo *philo);
 void				drop_forks(t_philo *philo);
@@ -137,7 +136,9 @@ void				drop_forks(t_philo *philo);
  */
 struct timeval		current_time(void);
 size_t				time_diff(struct timeval start, struct timeval end);
-void				wait_for(size_t time);
+size_t				curr_time_diff(struct timeval start);
+void				wait_for(t_philo *philo, size_t time);
+bool				die_time_check(struct timeval start, t_philo *philo);
 
 /**
  * Debug functions

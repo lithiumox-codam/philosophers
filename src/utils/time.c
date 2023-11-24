@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/09/08 14:32:24 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/24 17:36:56 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,33 @@ struct timeval	current_time(void)
 	return (time);
 }
 
-size_t	get_time_diff(struct timeval start)
+/**
+ * @brief A function that returns if the time started and the current time
+ * is bigger than the time to die and the philosopher is not eating
+ *
+ * @param start
+ * @param philo
+ * @return size_t
+ */
+bool	die_time_check(struct timeval start, t_philo *philo)
+{
+	pthread_mutex_lock(philo->data->mutexes.dead);
+	if (curr_time_diff(start) > philo->data->time_to_die)
+	{
+		pthread_mutex_unlock(philo->data->mutexes.dead);
+		return (false);
+	}
+	pthread_mutex_unlock(philo->data->mutexes.dead);
+	return (true);
+}
+
+size_t	curr_time_diff(struct timeval start)
 {
 	struct timeval	now;
-	size_t			diff;
 
 	gettimeofday(&now, NULL);
-	diff = (now.tv_sec - start.tv_sec) * 1000;
-	diff += (now.tv_usec - start.tv_usec) / 1000;
-	return (diff);
+	return ((now.tv_sec * 1000 + now.tv_usec / 1000) - (start.tv_sec * 1000
+			+ start.tv_usec / 1000));
 }
 
 /**
@@ -41,11 +59,15 @@ size_t	get_time_diff(struct timeval start)
  * @param time The time to wait in milliseconds
  * @note This function is not very accurate (on purpose)
  */
-void	wait_for(size_t time)
+void	wait_for(t_philo *philo, size_t time)
 {
 	struct timeval	start;
 
 	start = current_time();
-	while (get_time_diff(start) < time)
+	while (curr_time_diff(start) < time)
+	{
+		if (!die_time_check(philo->data->start, philo))
+			return ;
 		usleep(200);
+	}
 }
