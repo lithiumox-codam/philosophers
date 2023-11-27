@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/24 16:12:34 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/27 16:44:37 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ typedef struct s_data
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
 	size_t			eat_count;
-	size_t			dead;
+	bool			dead;
 	size_t			philo_eaten;
 	t_vector		*philos;
 	t_mutexes		mutexes;
@@ -111,6 +111,7 @@ typedef struct s_philo
 	t_state			state;
 	size_t			eat_count;
 	pthread_t		thread;
+	pthread_mutex_t	*lock;
 	struct timeval	last_eaten;
 	t_data			*data;
 }					t_philo;
@@ -118,6 +119,7 @@ typedef struct s_philo
 /**
  * Functions
  */
+pthread_mutex_t		*init_mutex(void);
 void				philo_loop(t_philo *philo);
 size_t				philo_id(void *ptr, t_vector *vec);
 size_t				atost(char *str);
@@ -130,7 +132,7 @@ bool				print_status(t_philo *philo);
 size_t				start_diff(t_philo *philo);
 void				take_forks(t_philo *philo);
 void				drop_forks(t_philo *philo);
-
+void				cleanup(t_data *data);
 /**
  * Time functions
  */

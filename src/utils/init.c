@@ -6,14 +6,16 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/24 17:46:25 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/27 16:54:43 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-pthread_mutex_t	*init_mutex(pthread_mutex_t *mutex)
+pthread_mutex_t	*init_mutex(void)
 {
+	pthread_mutex_t	*mutex;
+
 	mutex = malloc(sizeof(pthread_mutex_t));
 	if (!mutex)
 		return (NULL);
@@ -29,9 +31,9 @@ bool	initialize_mutexes(t_data *data)
 
 	tmp = &data->mutexes;
 	i = 0;
-	tmp->print = init_mutex(tmp->print);
-	tmp->dead = init_mutex(tmp->dead);
-	tmp->eat = init_mutex(tmp->eat);
+	tmp->print = init_mutex();
+	tmp->dead = init_mutex();
+	tmp->eat = init_mutex();
 	tmp->forks = malloc(sizeof(t_vector));
 	if (!tmp->print || !tmp->dead || !tmp->eat)
 		return (print_error("Initialization of mutexes failed!"), false);
@@ -40,7 +42,8 @@ bool	initialize_mutexes(t_data *data)
 		return (print_error("Initialization of forks vector failed!"), false);
 	while (i < data->philo_count)
 	{
-		fork = init_mutex(fork);
+		fork = malloc(sizeof(pthread_mutex_t));
+		pthread_mutex_init(fork, NULL);
 		if (!fork)
 			return (false);
 		vec_push(tmp->forks, fork);
@@ -49,10 +52,6 @@ bool	initialize_mutexes(t_data *data)
 	return (true);
 }
 
-/**
-
-	* !TODO: Remove forks from philo and use the ID to get the forks from the vector
-*/
 static bool	init_philos(t_data *data)
 {
 	t_philo	*philo;
@@ -70,6 +69,8 @@ static bool	init_philos(t_data *data)
 		philo->data = data;
 		philo->last_eaten = current_time();
 		philo->eat_count = 0;
+		philo->lock = malloc(sizeof(pthread_mutex_t));
+		pthread_mutex_init(philo->lock, NULL);
 		if (philo->id % 2 == 0)
 			philo->state = THINKING;
 		else

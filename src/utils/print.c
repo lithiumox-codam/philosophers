@@ -6,7 +6,7 @@
 /*   By: lithium <lithium@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/07 22:42:36 by lithium       #+#    #+#                 */
-/*   Updated: 2023/11/24 17:37:48 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/27 17:11:00 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,12 @@ bool	print_status(t_philo *philo)
 {
 	size_t	start_time;
 
+	if (philo->data->dead)
+		return (false);
 	pthread_mutex_lock(philo->data->mutexes.print);
 	start_time = start_diff(philo);
 	if (!die_time_check(philo->last_eaten, philo))
-		return (false);
+		return (pthread_mutex_unlock(philo->data->mutexes.print), false);
 	if (philo->state == THINKING)
 	{
 		printf("%zu %zu is thinking\n", start_time, philo->id + 1);

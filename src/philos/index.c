@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/24 17:41:07 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/27 17:04:23 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ static bool	philo_eat(t_philo *philo)
 	take_forks(philo);
 	if (!print_status(philo))
 		return (drop_forks(philo), false);
-	// Lock : Data races
+	pthread_mutex_lock(philo->lock);
 	philo->last_eaten = current_time();
 	philo->eat_count++;
-	// Unlock
+	pthread_mutex_unlock(philo->lock);
 	wait_for(philo, philo->data->time_to_eat);
 	drop_forks(philo);
 	philo->state = SLEEPING;
@@ -44,7 +44,6 @@ static bool	philo_sleep(t_philo *philo)
 	if (!print_status(philo))
 		return (false);
 	wait_for(philo, philo->data->time_to_sleep);
-	printf("time: %zu\n", philo->data->time_to_sleep);
 	philo->state = THINKING;
 	return (true);
 }
@@ -63,15 +62,16 @@ void	philo_loop(t_philo *philo)
 			return ;
 		wait_for(philo, philo->data->time_to_eat / 2);
 	}
-	while (1)
+	while (!philo->data->dead)
 	{
+		if (philo->state == DEAD)
+			return ;
 		if (!philo_eat(philo))
 			return ;
 		if (!philo_sleep(philo))
 			return ;
 		if (!print_status(philo))
 			return ;
-		if (philo->state == DEAD)
-			return ;
 	}
+	return ;
 }

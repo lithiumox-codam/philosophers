@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/24 17:24:08 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/27 13:31:20 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,22 @@ static void	monitor(t_vector *philos)
 			philo = (t_philo *)vec_get(philos, i);
 			if (!die_time_check(philo->last_eaten, philo))
 			{
+				pthread_mutex_lock(philo->data->mutexes.print);
 				printf("%zu %zu died\n", start_diff(philo), philo->id + 1);
-				return ;
+				print_vec(philo->data->mutexes.forks, print_mutex);
+				return (cleanup(philo->data), exit(1));
 			}
 			if (philo->eat_count < philo->data->eat_count)
-				return ;
+				return (cleanup(philo->data), exit(1));
 			i++;
 		}
 		i = 0;
 		usleep(500);
 	}
-	printf("All philosophers have eaten %zu times\n", philo->data->eat_count);
+	pthread_mutex_unlock(philo->data->mutexes.print);
+	printf("All philosophers have eaten %zu times\n",
+			philo->data->eat_count);
+	pthread_mutex_unlock(philo->data->mutexes.print);
 }
 
 void	run_simulation(t_data *data)
