@@ -12,13 +12,29 @@
 
 #include <philos.h>
 
+// static void	close_all(t_vector *philos)
+// {
+// 	size_t	i;
+// 	t_philo	*philo;
+
+// 	i = 0;
+// 	printf("amount of philos: %zu\n", philos->length);
+// 	while (i < philos->length)
+// 	{
+// 		philo = (t_philo *)vec_get(philos, i);
+// 		if (philo->thread)
+// 			pthread_join(philo->thread, NULL);
+// 		i++;
+// 	}
+// }
+
 static void	monitor(t_vector *philos)
 {
 	size_t	i;
 	t_philo	*philo;
 
 	i = 0;
-	while (true)
+	while (!philo->data->dead)
 	{
 		while (i < philos->length)
 		{
@@ -28,19 +44,20 @@ static void	monitor(t_vector *philos)
 				pthread_mutex_lock(philo->data->mutexes.print);
 				printf("%zu %zu died\n", start_diff(philo), philo->id + 1);
 				print_vec(philo->data->mutexes.forks, print_mutex);
-				return (cleanup(philo->data), exit(1));
+				close_all(philos); // TODO: fix this
+				cleanup(philo->data);
+				// Commented out currently treads not properly joined
+				return ;
 			}
-			if (philo->eat_count < philo->data->eat_count)
-				return (cleanup(philo->data), exit(1));
 			i++;
 		}
 		i = 0;
 		usleep(500);
 	}
 	pthread_mutex_unlock(philo->data->mutexes.print);
-	printf("All philosophers have eaten %zu times\n",
-			philo->data->eat_count);
+	printf("All philosophers have eaten %zu times\n", philo->data->eat_count);
 	pthread_mutex_unlock(philo->data->mutexes.print);
+	close_all(philos);
 }
 
 void	run_simulation(t_data *data)
@@ -60,13 +77,6 @@ void	run_simulation(t_data *data)
 	}
 	i = 0;
 	monitor(data->philos);
-	while (i < data->philo_count)
-	{
-		philo = (t_philo *)vec_get(data->philos, i);
-		if (pthread_join(philo->thread, NULL) != 0)
-			return (print_error("Failed to join thread"));
-		i++;
-	}
 }
 
 int	main(int ac, char **av)
@@ -80,7 +90,6 @@ int	main(int ac, char **av)
 		return (1);
 	print_vec(data.mutexes.forks, print_mutex);
 	print_vec(data.philos, print_philo);
-	printf("Running SIMULATION\n");
 	run_simulation(&data);
 	printf("Simulation done\n");
 	return (0);

@@ -18,7 +18,7 @@ void	free_philo(void *philo)
 
 	tmp = (t_philo *)philo;
 	pthread_join(tmp->thread, NULL);
-	pthread_mutex_destroy(tmp->lock);
+	// pthread_mutex_destroy(tmp->lock);
 	free(tmp->lock);
 	free(tmp);
 }

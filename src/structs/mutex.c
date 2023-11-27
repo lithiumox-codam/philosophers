@@ -18,11 +18,10 @@ void	free_mutex(void *mutex)
 	int				destroy_result;
 
 	tmp = (pthread_mutex_t *)mutex;
-	pthread_mutex_unlock(tmp);
 	destroy_result = pthread_mutex_destroy(tmp);
 	if (destroy_result != 0)
 	{
 		printf("Error: Mutex destroy failed with error code: %d\n",
-				destroy_result);
+			destroy_result);
 	}
 }

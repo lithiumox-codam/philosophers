@@ -18,6 +18,8 @@ void	print_vec(t_vector *vec, void (*print)(void *))
 	size_t	i;
 
 	i = 0;
+	if (!DEBUG)
+		return ;
 	while (i < vec->length)
 	{
 		print(vec_get(vec, i));
@@ -35,12 +37,12 @@ void	print_mutex(void *mutex)
 	if (lock_status == EBUSY)
 	{
 		printf("\033[1;34m|-- Mutex Address: %p (Status: Locked)\033[0m\n",
-				mutex);
+			mutex);
 	}
 	else
 	{
 		printf("\033[1;34m|-- Mutex Address: %p (Status: Not Locked)\033[0m\n",
-				mutex);
+			mutex);
 		pthread_mutex_unlock(mtx);
 	}
 }

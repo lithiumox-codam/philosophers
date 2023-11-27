@@ -26,10 +26,14 @@ static bool	philo_eat(t_philo *philo)
 	pthread_mutex_lock(philo->lock);
 	philo->last_eaten = current_time();
 	philo->eat_count++;
+	if (philo->state == DEAD)
+		return (pthread_mutex_unlock(philo->lock), drop_forks(philo), false);
 	pthread_mutex_unlock(philo->lock);
 	wait_for(philo, philo->data->time_to_eat);
 	drop_forks(philo);
+	pthread_mutex_lock(philo->lock);
 	philo->state = SLEEPING;
+	pthread_mutex_unlock(philo->lock);
 	return (true);
 }
 
@@ -44,7 +48,11 @@ static bool	philo_sleep(t_philo *philo)
 	if (!print_status(philo))
 		return (false);
 	wait_for(philo, philo->data->time_to_sleep);
+	pthread_mutex_lock(philo->lock);
 	philo->state = THINKING;
+	pthread_mutex_unlock(philo->lock);
+	if (!print_status(philo))
+		return (false);
 	return (true);
 }
 
@@ -56,22 +64,26 @@ static bool	philo_sleep(t_philo *philo)
  */
 void	philo_loop(t_philo *philo)
 {
+	bool	isdead;
+
 	if (philo->state == THINKING)
 	{
 		if (!print_status(philo))
 			return ;
 		wait_for(philo, philo->data->time_to_eat / 2);
 	}
-	while (!philo->data->dead)
+	while (!isdead)
 	{
+		pthread_mutex_lock(philo->lock);
+		isdead = philo->data->dead;
+		pthread_mutex_unlock(philo->lock);
 		if (philo->state == DEAD)
 			return ;
 		if (!philo_eat(philo))
 			return ;
 		if (!philo_sleep(philo))
 			return ;
-		if (!print_status(philo))
-			return ;
 	}
-	return ;
+	return (pthread_mutex_unlock(philo->lock),
+		pthread_mutex_destroy(philo->lock), (void)NULL);
 }

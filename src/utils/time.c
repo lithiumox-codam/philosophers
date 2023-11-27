@@ -39,10 +39,10 @@ bool	die_time_check(struct timeval start, t_philo *philo)
 
 	pthread_mutex_lock(philo->lock);
 	time_diff = curr_time_diff(start);
-	if (time_diff > philo->data->time_to_die)
+	if (time_diff > philo->data->time_to_die && philo->state != EATING)
 	{
+		philo->state = DEAD;
 		pthread_mutex_unlock(philo->lock);
-		drop_forks(philo);
 		return (false);
 	}
 	pthread_mutex_unlock(philo->lock);
@@ -61,17 +61,17 @@ size_t	curr_time_diff(struct timeval start)
 /**
  * @brief Function to wait for a semi certain amount of time
  * @param time The time to wait in milliseconds
- * @note This function is not very accurate (on purpose)
  */
 void	wait_for(t_philo *philo, size_t time)
 {
 	struct timeval	start;
 
 	start = current_time();
+	(void)philo;
 	while (curr_time_diff(start) < time)
 	{
 		if (!die_time_check(philo->last_eaten, philo))
 			return ;
-		usleep(200);
+		usleep(300);
 	}
 }

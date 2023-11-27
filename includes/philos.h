@@ -22,6 +22,8 @@
 # include <sys/time.h>
 # include <unistd.h>
 
+# define DEBUG false
+
 /**
  * @brief The struct containing all mutexes
  *

@@ -12,21 +12,25 @@
 
 #include <philos.h>
 
-static void	clean_mutexes(t_mutexes *mutexes)
-{
-	printf("cleaning mutex struct!\n");
-	pthread_mutex_destroy(mutexes->print);
-	pthread_mutex_destroy(mutexes->dead);
-	pthread_mutex_destroy(mutexes->eat);
-	free(mutexes->print);
-	free(mutexes->dead);
-	free(mutexes->eat);
-}
+// static void	clean_mutexes(t_mutexes *mutexes)
+// {
+// 	pthread_mutex_unlock(mutexes->print);
+// 	pthread_mutex_destroy(mutexes->print);
+// 	pthread_mutex_destroy(mutexes->dead);
+// 	pthread_mutex_destroy(mutexes->eat);
+// 	free(mutexes->print);
+// 	free(mutexes->dead);
+// 	free(mutexes->eat);
+// }
 
 void	cleanup(t_data *data)
 {
-	data->dead = true;
-	vec_free(data->philos);
-	vec_free(data->mutexes.forks);
-	clean_mutexes(&data->mutexes);
+	(void)data;
+	// pthread_mutex_lock(data->mutexes.dead);
+	// data->dead = true;
+	// pthread_mutex_unlock(data->mutexes.dead);
+	// vec_free(data->philos);
+	// vec_free(data->mutexes.forks);
+	// clean_mutexes(&data->mutexes);
+	// exit(0);
 }
