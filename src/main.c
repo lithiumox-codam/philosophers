@@ -36,16 +36,16 @@ static void	monitor(t_vector *philos)
 	i = 0;
 	while (1)
 	{
-		usleep(500);
+		usleep(1000);
 		while (i < philos->length)
 		{
 			philo = (t_philo *)vec_get(philos, i);
 			if (!die_time_check(philo->last_eaten, philo))
 			{
 				pthread_mutex_lock(philo->data->mutexes.print);
+				philo->data->dead = true;
 				printf("%zu %zu died\n", start_diff(philo), philo->id + 1);
 				pthread_mutex_unlock(philo->data->mutexes.print);
-				print_vec(philo->data->mutexes.forks, print_mutex);
 				close_all(philos);
 				cleanup(philo->data);
 				return ;

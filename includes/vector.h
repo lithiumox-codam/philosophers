@@ -52,7 +52,7 @@ typedef struct s_vector
 }			t_vector;
 
 void		*vec_init(t_vector *vec, size_t capacity, size_t type_size,
-				void (*free)(void *));
+			void (*free)(void *));
 void		*vec_get(t_vector *vec, size_t index);
 void		*vec_set(t_vector *vec, size_t index, void *data);
 void		*vec_pop(t_vector *vec);
@@ -73,4 +73,5 @@ void		*ft_memmove(void *dst, const void *src, size_t len);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 void		*ft_memset(void *b, int c, size_t len);
 void		*ft_realloc(void *ptr, size_t size);
+int			ft_strcmp(const char *s1, const char *s2);
 #endif

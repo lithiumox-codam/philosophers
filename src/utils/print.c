@@ -27,27 +27,11 @@ size_t	start_diff(t_philo *philo)
  *
  * @param philo The philosopher
  */
-bool	print_status(t_philo *philo)
+bool	print_status(t_philo *philo, char *msg)
 {
-	size_t	start_time;
-
-	if (philo->data->dead)
-		return (false);
 	pthread_mutex_lock(philo->data->mutexes.print);
-	start_time = start_diff(philo);
-	if (!die_time_check(philo->last_eaten, philo))
-		return (pthread_mutex_unlock(philo->data->mutexes.print), false);
-	if (philo->state == THINKING)
-	{
-		printf("%zu %zu is thinking\n", start_time, philo->id + 1);
-		pthread_mutex_lock(philo->lock);
-		philo->state = EATING;
-		pthread_mutex_unlock(philo->lock);
-	}
-	else if (philo->state == EATING)
-		printf("%zu %zu is eating\n", start_time, philo->id + 1);
-	else if (philo->state == SLEEPING)
-		printf("%zu %zu is sleeping\n", start_time, philo->id + 1);
+	if (!philo->data->dead)
+		printf("%zu %zu %s\n", start_diff(philo), philo->id + 1, msg);
 	pthread_mutex_unlock(philo->data->mutexes.print);
 	return (true);
 }

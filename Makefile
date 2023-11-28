@@ -1,5 +1,5 @@
 NAME = philosophers
-VEC_FILES = vec_apply vec_free vec_insert vec_remove vec_set vec_count vec_get vec_pop vec_replace vec_find vec_init vec_push vec_resize ft_mem
+VEC_FILES = vec_apply vec_free vec_insert vec_remove vec_set vec_count vec_get vec_pop vec_replace vec_find vec_init vec_push vec_resize ft_mem ft_strcmp
 FILES = main utils/init utils/vector utils/print utils/atost structs/philo utils/time debug/index utils/parse philos/index structs/mutex utils/cleanup $(VEC_FILES)
 SRC_DIR = src
 INCLUDES = -I includes

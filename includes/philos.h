@@ -119,14 +119,13 @@ typedef struct s_philo
  */
 pthread_mutex_t		*init_mutex(void);
 void				philo_loop(t_philo *philo);
-size_t				philo_id(void *ptr, t_vector *vec);
 size_t				atost(char *str);
 bool				init(t_data *data, int ac, char **av);
 bool				parse_input(t_data *data, int ac, char **av);
 void				print_error(char *error_msg);
 void				free_mutex(void *mutexes);
 void				free_philo(void *philo);
-bool				print_status(t_philo *philo);
+bool				print_status(t_philo *philo, char *msg);
 size_t				start_diff(t_philo *philo);
 void				take_forks(t_philo *philo);
 void				drop_forks(t_philo *philo);

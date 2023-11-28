@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   vec_apply.c                                        :+:    :+:            */
+/*   ft_strcmp.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -10,22 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <vector.h>
-
-/**
- * @brief Applies a function to all elements in the vector
- *
- * @param vec The vector to apply the function to
- * @param f The function to apply
- */
-void	vec_apply(t_vector *vec, void (*f)(void *))
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	size_t	i;
+	int x;
 
-	i = 0;
-	while (i < vec->length)
-	{
-		f(vec->data + i * vec->type_size);
-		i++;
-	}
+	x = 0;
+	if (!s1 || !s2)
+		return (1);
+	while (s1[x] == s2[x] && s1[x] != '\0')
+		x++;
+	return ((unsigned int)(s1[x] - s2[x]));
 }

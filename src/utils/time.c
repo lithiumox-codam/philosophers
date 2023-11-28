@@ -35,14 +35,8 @@ struct timeval	current_time(void)
  */
 bool	die_time_check(struct timeval start, t_philo *philo)
 {
-	pthread_mutex_lock(philo->lock);
 	if (curr_time_diff(start) > philo->data->time_to_die)
-	{
-		philo->state = DEAD;
-		pthread_mutex_unlock(philo->lock);
 		return (false);
-	}
-	pthread_mutex_unlock(philo->lock);
 	return (true);
 }
 
