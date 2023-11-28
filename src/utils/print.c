@@ -6,7 +6,7 @@
 /*   By: lithium <lithium@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/07 22:42:36 by lithium       #+#    #+#                 */
-/*   Updated: 2023/11/27 17:11:00 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/28 16:28:27 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ bool	print_status(t_philo *philo)
 	if (philo->state == THINKING)
 	{
 		printf("%zu %zu is thinking\n", start_time, philo->id + 1);
+		pthread_mutex_lock(philo->lock);
 		philo->state = EATING;
+		pthread_mutex_unlock(philo->lock);
 	}
 	else if (philo->state == EATING)
 		printf("%zu %zu is eating\n", start_time, philo->id + 1);

@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:50:29 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/27 17:09:36 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/28 13:27:19 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,9 @@ void	free_philo(void *philo)
 	t_philo	*tmp;
 
 	tmp = (t_philo *)philo;
-	pthread_join(tmp->thread, NULL);
-	// pthread_mutex_destroy(tmp->lock);
+	pthread_mutex_destroy(tmp->lock);
 	free(tmp->lock);
-	free(tmp);
+	// free(tmp);
 }
 
 void	print_philo(void *philo)

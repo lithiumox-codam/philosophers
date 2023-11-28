@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/27 16:44:37 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/28 16:30:51 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_mutexes
 	pthread_mutex_t	*dead;
 	pthread_mutex_t	*eat;
 	pthread_mutex_t	*eat_count;
+	pthread_mutex_t	*start;
 	pthread_mutex_t	*philos_created;
 }					t_mutexes;
 /**
@@ -56,11 +57,6 @@ typedef struct s_mutexes
  * @param dead Whether a philosopher has died
  * @param philo_eaten The amount of times a philosopher has eaten
  * @param forks The mutexes representing the forks
- * @param print The mutex used for printing
- * @param dead_mutex The mutex used to check if a philosopher has died
- * @param eat_mutex The mutex used to check if a philosopher has eaten
- * @param eat_count_mutex The mutex used to check if a philosopher has eaten
- * enough
  * @param start The time at which the program started
  * @note The mutexes are stored in a vector, so they can be accessed by id
  * this is done to prevent having to pass the mutexes to every function

@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/27 16:54:43 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/28 16:34:17 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ bool	initialize_mutexes(t_data *data)
 	tmp->print = init_mutex();
 	tmp->dead = init_mutex();
 	tmp->eat = init_mutex();
+	tmp->start = init_mutex();
 	tmp->forks = malloc(sizeof(t_vector));
 	if (!tmp->print || !tmp->dead || !tmp->eat)
 		return (print_error("Initialization of mutexes failed!"), false);
@@ -58,7 +59,7 @@ static bool	init_philos(t_data *data)
 
 	data->philos = malloc(sizeof(t_vector));
 	if (!data->philos || !vec_init(data->philos, data->philo_count,
-			sizeof(t_philo), free_philo))
+			sizeof(t_philo), NULL))
 		return (false);
 	while (data->philos_created < data->philo_count)
 	{
@@ -67,7 +68,6 @@ static bool	init_philos(t_data *data)
 			return (print_error("Allocation of philo failed!"), false);
 		philo->id = data->philos_created;
 		philo->data = data;
-		philo->last_eaten = current_time();
 		philo->eat_count = 0;
 		philo->lock = malloc(sizeof(pthread_mutex_t));
 		pthread_mutex_init(philo->lock, NULL);

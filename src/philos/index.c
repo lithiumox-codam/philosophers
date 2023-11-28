@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/27 17:04:23 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/28 16:41:09 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,19 +64,18 @@ static bool	philo_sleep(t_philo *philo)
  */
 void	philo_loop(t_philo *philo)
 {
-	bool	isdead;
-
+	pthread_mutex_lock(philo->data->mutexes.start);
+	pthread_mutex_unlock(philo->data->mutexes.start);
 	if (philo->state == THINKING)
 	{
 		if (!print_status(philo))
 			return ;
 		wait_for(philo, philo->data->time_to_eat / 2);
 	}
-	while (!isdead)
+	while (1)
 	{
-		pthread_mutex_lock(philo->lock);
-		isdead = philo->data->dead;
-		pthread_mutex_unlock(philo->lock);
+		if (philo->eat_count == philo->data->eat_count)
+			return ;
 		if (philo->state == DEAD)
 			return ;
 		if (!philo_eat(philo))
