@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/29 17:41:19 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 17:55:36 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	philo_loop(t_philo *philo)
 {
 	pthread_mutex_lock(philo->data->mutexes.start);
 	pthread_mutex_unlock(philo->data->mutexes.start);
-	if (philo->id % 2)
+	if ((philo->id) % 2 == 0)
 	{
 		if (!print_status(philo, "is thinking"))
 			return ;

@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:57:15 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/29 17:45:54 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 17:59:46 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,24 @@ bool	check_death(t_philo *philo)
 
 bool	take_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->left_fork);
-	if (!print_status(philo, "has taken a fork"))
-		return (pthread_mutex_unlock(philo->left_fork), false);
-	pthread_mutex_lock(philo->right_fork);
-	if (!print_status(philo, "has taken a fork"))
-		return (drop_forks(philo), false);
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(philo->left_fork);
+		if (!print_status(philo, "has taken a fork"))
+			return (pthread_mutex_unlock(philo->left_fork), false);
+		pthread_mutex_lock(philo->right_fork);
+		if (!print_status(philo, "has taken a fork"))
+			return (drop_forks(philo), false);
+	}
+	else
+	{
+		pthread_mutex_lock(philo->right_fork);
+		if (!print_status(philo, "has taken a fork"))
+			return (pthread_mutex_unlock(philo->right_fork), false);
+		pthread_mutex_lock(philo->left_fork);
+		if (!print_status(philo, "has taken a fork"))
+			return (drop_forks(philo), false);
+	}
 	return (true);
 }
 
