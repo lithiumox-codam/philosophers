@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/28 16:37:34 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 17:02:05 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,14 @@ static void	close_all(t_vector *philos)
 		free_philo(philo);
 		i++;
 	}
+	print_vec(philo->data->mutexes.forks, print_mutex);
+}
+
+static void	change_death(t_philo *philo)
+{
+	pthread_mutex_lock(philo->data->mutexes.dead);
+	philo->data->dead = true;
+	pthread_mutex_unlock(philo->data->mutexes.dead);
 }
 
 static void	monitor(t_vector *philos)
@@ -33,17 +41,16 @@ static void	monitor(t_vector *philos)
 	size_t	i;
 	t_philo	*philo;
 
-	i = 0;
 	while (1)
 	{
-		usleep(1000);
+		i = 0;
 		while (i < philos->length)
 		{
 			philo = (t_philo *)vec_get(philos, i);
 			if (!die_time_check(philo->last_eaten, philo))
 			{
+				change_death(philo);
 				pthread_mutex_lock(philo->data->mutexes.print);
-				philo->data->dead = true;
 				printf("%zu %zu died\n", start_diff(philo), philo->id + 1);
 				pthread_mutex_unlock(philo->data->mutexes.print);
 				close_all(philos);
@@ -52,7 +59,7 @@ static void	monitor(t_vector *philos)
 			}
 			i++;
 		}
-		i = 0;
+		usleep(1000);
 	}
 	pthread_mutex_unlock(philo->data->mutexes.print);
 	printf("All philosophers have eaten %zu times\n", philo->data->eat_count);
@@ -71,7 +78,7 @@ void	run_simulation(t_data *data)
 		philo = (t_philo *)vec_get(data->philos, i);
 		if (pthread_create(&philo->thread, NULL, (void *)philo_loop,
 				philo) != 0)
-			return (print_error("Failed to create thread"));
+			return (print_error("Failed to create thread", NULL));
 		i++;
 	}
 	data->start = current_time();
@@ -91,8 +98,9 @@ int	main(int ac, char **av)
 	t_data	data;
 
 	ft_memset(&data, 0, sizeof(t_data));
+	data.dead = false;
 	if (ac < 5 || ac > 6)
-		return (print_error("Wrong amount of arguments"), 1);
+		return (print_error("Wrong amount of arguments", NULL), 1);
 	if (!init(&data, ac, av))
 		return (1);
 	print_vec(data.mutexes.forks, print_mutex);

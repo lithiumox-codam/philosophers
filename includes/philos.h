@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/28 16:30:51 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 17:43:58 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef struct s_mutexes
 	pthread_mutex_t	*print;
 	pthread_mutex_t	*dead;
 	pthread_mutex_t	*eat;
-	pthread_mutex_t	*eat_count;
 	pthread_mutex_t	*start;
 	pthread_mutex_t	*philos_created;
 }					t_mutexes;
@@ -109,7 +108,8 @@ typedef struct s_philo
 	t_state			state;
 	size_t			eat_count;
 	pthread_t		thread;
-	pthread_mutex_t	*lock;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 	struct timeval	last_eaten;
 	t_data			*data;
 }					t_philo;
@@ -122,14 +122,15 @@ void				philo_loop(t_philo *philo);
 size_t				atost(char *str);
 bool				init(t_data *data, int ac, char **av);
 bool				parse_input(t_data *data, int ac, char **av);
-void				print_error(char *error_msg);
+void				print_error(char *error_msg, bool *error);
 void				free_mutex(void *mutexes);
 void				free_philo(void *philo);
 bool				print_status(t_philo *philo, char *msg);
 size_t				start_diff(t_philo *philo);
-void				take_forks(t_philo *philo);
+bool				take_forks(t_philo *philo);
 void				drop_forks(t_philo *philo);
 void				cleanup(t_data *data);
+bool				check_death(t_philo *philo);
 /**
  * Time functions
  */

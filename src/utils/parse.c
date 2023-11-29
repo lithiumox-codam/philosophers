@@ -6,15 +6,17 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 22:57:32 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/27 16:46:59 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 16:45:40 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-void	print_error(char *error_msg)
+void	print_error(char *error_msg, bool *error)
 {
 	printf("\033[1;31mERROR: %s\033[0m\n", error_msg);
+	if (error)
+		*error = false;
 }
 
 /**
@@ -27,17 +29,20 @@ void	print_error(char *error_msg)
  */
 static bool	check_input(t_data *data, int ac)
 {
+	bool	no_error;
+
+	no_error = true;
 	if (data->philo_count == 0 || data->philo_count > 2047)
-		return (print_error("Philo maximum is 2047"), false);
+		print_error("Philo maximum is 2047", &no_error);
 	if (data->time_to_die == 0 || data->time_to_die > 2147483647)
-		return (print_error("Invalid time to die"), false);
+		print_error("Invalid time to die", &no_error);
 	if (data->time_to_eat == 0 || data->time_to_eat > 2147483647)
-		return (print_error("Invalid time to eat"), false);
+		print_error("Invalid time to eat", &no_error);
 	if (data->time_to_sleep == 0 || data->time_to_sleep > 2147483647)
-		return (print_error("Invalid time to sleep"), false);
+		print_error("Invalid time to sleep", &no_error);
 	if (ac > 5 && (data->eat_count > 2147483647))
-		return (print_error("Invalid number of times to eat"), false);
-	return (true);
+		print_error("Invalid number of times to eat", &no_error);
+	return (no_error);
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/28 16:41:09 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 17:41:19 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,16 @@
  */
 static bool	philo_eat(t_philo *philo)
 {
-	take_forks(philo);
+	if (!take_forks(philo))
+		return (false);
 	if (!print_status(philo, "is eating"))
 		return (drop_forks(philo), false);
 	wait_for(philo, philo->data->time_to_eat);
 	drop_forks(philo);
-	pthread_mutex_lock(philo->lock);
+	pthread_mutex_lock(philo->data->mutexes.eat);
 	philo->last_eaten = current_time();
 	philo->eat_count++;
-	pthread_mutex_unlock(philo->lock);
+	pthread_mutex_unlock(philo->data->mutexes.eat);
 	return (true);
 }
 
@@ -58,7 +59,7 @@ void	philo_loop(t_philo *philo)
 {
 	pthread_mutex_lock(philo->data->mutexes.start);
 	pthread_mutex_unlock(philo->data->mutexes.start);
-	if (philo->state == THINKING)
+	if (philo->id % 2)
 	{
 		if (!print_status(philo, "is thinking"))
 			return ;

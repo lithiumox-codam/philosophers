@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/28 16:34:17 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 17:44:23 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,11 @@ bool	initialize_mutexes(t_data *data)
 	tmp->start = init_mutex();
 	tmp->forks = malloc(sizeof(t_vector));
 	if (!tmp->print || !tmp->dead || !tmp->eat)
-		return (print_error("Initialization of mutexes failed!"), false);
+		return (print_error("Initialization of mutexes failed!", NULL), false);
 	if (!tmp->forks || !vec_init(tmp->forks, data->philo_count,
 			sizeof(pthread_mutex_t), free_mutex))
-		return (print_error("Initialization of forks vector failed!"), false);
+		return (print_error("Initialization of forks vector failed!", NULL),
+			false);
 	while (i < data->philo_count)
 	{
 		fork = malloc(sizeof(pthread_mutex_t));
@@ -65,18 +66,15 @@ static bool	init_philos(t_data *data)
 	{
 		philo = (t_philo *)malloc(sizeof(t_philo));
 		if (!philo)
-			return (print_error("Allocation of philo failed!"), false);
+			return (print_error("Allocation of philo failed!", NULL), false);
 		philo->id = data->philos_created;
 		philo->data = data;
 		philo->eat_count = 0;
-		philo->lock = malloc(sizeof(pthread_mutex_t));
-		pthread_mutex_init(philo->lock, NULL);
-		if (philo->id % 2 == 0)
-			philo->state = THINKING;
-		else
-			philo->state = EATING;
+		philo->left_fork = vec_get(data->mutexes.forks, philo->id);
+		philo->right_fork = vec_get(data->mutexes.forks, (philo->id + 1)
+				% data->philo_count);
 		if (!vec_push(data->philos, philo))
-			return (print_error("Vector push failed with philo!"), false);
+			return (print_error("Vector push failed with philo!", NULL), false);
 		data->philos_created++;
 	}
 	return (true);

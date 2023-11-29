@@ -6,7 +6,7 @@
 /*   By: lithium <lithium@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/07 22:42:36 by lithium       #+#    #+#                 */
-/*   Updated: 2023/11/28 16:28:27 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/29 17:36:23 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ size_t	start_diff(t_philo *philo)
  */
 bool	print_status(t_philo *philo, char *msg)
 {
-	pthread_mutex_lock(philo->data->mutexes.print);
-	if (!philo->data->dead)
-		printf("%zu %zu %s\n", start_diff(philo), philo->id + 1, msg);
-	pthread_mutex_unlock(philo->data->mutexes.print);
+	// pthread_mutex_lock(philo->data->mutexes.print);
+	if (check_death(philo))
+		return (pthread_mutex_unlock(philo->data->mutexes.print), false);
+	printf("%zu %zu %s\n", start_diff(philo), philo->id + 1, msg);
+	// pthread_mutex_unlock(philo->data->mutexes.print);
 	return (true);
 }
