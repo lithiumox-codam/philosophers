@@ -6,23 +6,18 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 18:00:51 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 20:23:27 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-/**
- * @brief Gets the current time in milliseconds
- *
- * @return size_t The current time in milliseconds
- */
-struct timeval	current_time(void)
+size_t	get_time(void)
 {
-	struct timeval	time;
+	struct timeval	now;
 
-	gettimeofday(&time, NULL);
-	return (time);
+	gettimeofday(&now, NULL);
+	return (now.tv_sec * 1000 + now.tv_usec / 1000);
 }
 
 /**
@@ -35,20 +30,16 @@ struct timeval	current_time(void)
  */
 bool	die_time_check(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->data->eat);
+	pthread_mutex_lock(&philo->lock);
 	if (curr_time_diff(philo->last_eaten) >= philo->data->time_to_die)
-		return (pthread_mutex_unlock(&philo->data->eat), false);
-	pthread_mutex_unlock(&philo->data->eat);
+		return (pthread_mutex_unlock(&philo->lock), false);
+	pthread_mutex_unlock(&philo->lock);
 	return (true);
 }
 
-size_t	curr_time_diff(struct timeval start)
+size_t	curr_time_diff(size_t start)
 {
-	struct timeval	now;
-
-	gettimeofday(&now, NULL);
-	return ((now.tv_sec * 1000 + now.tv_usec / 1000) - (start.tv_sec * 1000
-			+ start.tv_usec / 1000));
+	return (get_time() - start);
 }
 
 /**
@@ -57,13 +48,9 @@ size_t	curr_time_diff(struct timeval start)
  */
 void	wait_for(t_philo *philo, size_t time)
 {
-	struct timeval	start;
+	size_t	start;
 
-	start = current_time();
+	start = get_time();
 	while (curr_time_diff(start) < time)
-	{
-		if (check_death(philo))
-			return ;
 		usleep(250);
-	}
 }

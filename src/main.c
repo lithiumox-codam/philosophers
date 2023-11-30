@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 18:05:45 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 20:22:47 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ static void	monitor(t_data *data)
 {
 	size_t	i;
 
-	// t_philo	*philos;
-	// philos = &data->philos;
 	while (1)
 	{
 		i = 0;
@@ -49,7 +47,7 @@ static void	monitor(t_data *data)
 			{
 				change_death(&data->philos[i]);
 				pthread_mutex_lock(&data->print);
-				printf("%zu %zu died\n", start_diff(&data->philos[i]),
+				printf("%zu %zu died\n", curr_time_diff(data->start_time),
 					data->philos[i].id + 1);
 				pthread_mutex_unlock(&data->print);
 				close_all(data);
@@ -80,7 +78,7 @@ void	run_simulation(t_data *data)
 			return (print_error("Failed to create thread", NULL));
 		i++;
 	}
-	data->start_time = current_time();
+	data->start_time = get_time();
 	i = 0;
 	while (i < data->philo_count)
 	{
@@ -88,10 +86,7 @@ void	run_simulation(t_data *data)
 		i++;
 	}
 	pthread_mutex_unlock(&data->start);
-	pthread_mutex_lock(&data->forks[0]);
-	pthread_mutex_unlock(&data->forks[0]);
 	monitor(data);
-	// usleep(10000000);
 }
 
 int	main(int ac, char **av)

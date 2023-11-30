@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 17:50:28 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 19:59:25 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static bool	init_philos(t_data *data)
 		data->philos[data->philos_created].id = data->philos_created;
 		data->philos[data->philos_created].data = data;
 		data->philos[data->philos_created].eat_count = 0;
+		pthread_mutex_init(&data->philos[data->philos_created].lock, NULL);
 		data->philos[data->philos_created].left_fork = &data->forks[data->philos_created];
 		data->philos[data->philos_created].right_fork = &data->forks[(data->philos_created
 				+ 1) % data->philo_count];
