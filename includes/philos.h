@@ -6,19 +6,19 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/29 17:43:58 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 17:38:38 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOS_H
 # define PHILOS_H
 
-# include "vector.h"
 # include <pthread.h>
 # include <semaphore.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <sys/time.h>
 # include <unistd.h>
 
@@ -37,13 +37,38 @@
  */
 typedef struct s_mutexes
 {
-	t_vector		*forks;
-	pthread_mutex_t	*print;
-	pthread_mutex_t	*dead;
-	pthread_mutex_t	*eat;
-	pthread_mutex_t	*start;
-	pthread_mutex_t	*philos_created;
-}					t_mutexes;
+	pthread_mutex_t		*forks;
+	pthread_mutex_t		print;
+	pthread_mutex_t		dead;
+	pthread_mutex_t		eat;
+	pthread_mutex_t		start;
+	pthread_mutex_t		*philos_created;
+}						t_mutexes;
+
+typedef struct s_data	t_data;
+
+/**
+ * @brief The struct containing all data needed for a philosopher
+ *
+ * @param id The id of the philosopher
+ * @param state The state of the philosopher
+ * @param thread The thread of the philosopher
+ * @param left_fork The mutex of the left fork
+ * @param right_fork The mutex of the right fork
+ * @param last_eaten The time at which the philosopher last ate
+ * @note The mutexes are stored in a vector, so they can be accessed by id
+ */
+typedef struct s_philo
+{
+	size_t				id;
+	size_t				eat_count;
+	pthread_t			thread;
+	pthread_mutex_t		*left_fork;
+	pthread_mutex_t		*right_fork;
+	struct timeval		last_eaten;
+	t_data				*data;
+}						t_philo;
+
 /**
  * @brief The struct containing all data needed for the program
  *
@@ -62,89 +87,49 @@ typedef struct s_mutexes
  */
 typedef struct s_data
 {
-	size_t			philo_count;
-	size_t			philos_created;
-	size_t			time_to_die;
-	size_t			time_to_eat;
-	size_t			time_to_sleep;
-	size_t			eat_count;
-	bool			dead;
-	size_t			philo_eaten;
-	t_vector		*philos;
-	t_mutexes		mutexes;
-	struct timeval	start;
-}					t_data;
-
-/**
- * @brief The enum containing all states a philosopher can be in
- *
- * @param THINKING The philosopher is thinking
- * @param EATING The philosopher is eating
- * @param SLEEPING The philosopher is sleeping
- * @param DEAD The philosopher is dead
- */
-typedef enum e_state
-{
-	THINKING,
-	EATING,
-	SLEEPING,
-	DEAD
-}					t_state;
-
-/**
- * @brief The struct containing all data needed for a philosopher
- *
- * @param id The id of the philosopher
- * @param state The state of the philosopher
- * @param thread The thread of the philosopher
- * @param left_fork The mutex of the left fork
- * @param right_fork The mutex of the right fork
- * @param last_eaten The time at which the philosopher last ate
- * @note The mutexes are stored in a vector, so they can be accessed by id
- */
-typedef struct s_philo
-{
-	size_t			id;
-	t_state			state;
-	size_t			eat_count;
-	pthread_t		thread;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	struct timeval	last_eaten;
-	t_data			*data;
-}					t_philo;
+	size_t				philo_count;
+	size_t				philos_created;
+	size_t				time_to_die;
+	size_t				time_to_eat;
+	size_t				time_to_sleep;
+	size_t				eat_count;
+	bool				track_eating;
+	bool				is_dead;
+	size_t				philo_eaten;
+	t_philo				*philos;
+	// t_mutexes			*mutexes;
+	pthread_mutex_t		*forks;
+	pthread_mutex_t		print;
+	pthread_mutex_t		dead;
+	pthread_mutex_t		eat;
+	pthread_mutex_t		start;
+	struct timeval		start_time;
+}						t_data;
 
 /**
  * Functions
  */
-pthread_mutex_t		*init_mutex(void);
-void				philo_loop(t_philo *philo);
-size_t				atost(char *str);
-bool				init(t_data *data, int ac, char **av);
-bool				parse_input(t_data *data, int ac, char **av);
-void				print_error(char *error_msg, bool *error);
-void				free_mutex(void *mutexes);
-void				free_philo(void *philo);
-bool				print_status(t_philo *philo, char *msg);
-size_t				start_diff(t_philo *philo);
-bool				take_forks(t_philo *philo);
-void				drop_forks(t_philo *philo);
-void				cleanup(t_data *data);
-bool				check_death(t_philo *philo);
+pthread_mutex_t			*init_mutex(void);
+void					philo_loop(t_philo *philo);
+size_t					atost(char *str);
+bool					init(t_data *data, int ac, char **av);
+bool					parse_input(t_data *data, int ac, char **av);
+void					print_error(char *error_msg, bool *error);
+void					free_mutex(void *mutexes);
+void					free_philo(void *philo);
+bool					print_status(t_philo *philo, char *msg);
+size_t					start_diff(t_philo *philo);
+bool					take_forks(t_philo *philo);
+void					drop_forks(t_philo *philo);
+void					cleanup(t_data *data);
+bool					check_death(t_philo *philo);
 /**
  * Time functions
  */
-struct timeval		current_time(void);
-size_t				time_diff(struct timeval start, struct timeval end);
-size_t				curr_time_diff(struct timeval start);
-void				wait_for(t_philo *philo, size_t time);
-bool				die_time_check(struct timeval start, t_philo *philo);
-
-/**
- * Debug functions
- */
-void				print_vec(t_vector *vec, void (*print)(void *));
-void				print_mutex(void *mutex);
-void				print_philo(void *philo);
+struct timeval			current_time(void);
+size_t					time_diff(struct timeval start, struct timeval end);
+size_t					curr_time_diff(struct timeval start);
+void					wait_for(t_philo *philo, size_t time);
+bool					die_time_check(t_philo *philo);
 
 #endif

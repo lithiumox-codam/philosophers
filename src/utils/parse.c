@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 22:57:32 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/29 16:45:40 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 17:53:59 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ bool	parse_input(t_data *data, int ac, char **av)
 	data->time_to_die = atost(av[2]);
 	data->time_to_eat = atost(av[3]);
 	data->time_to_sleep = atost(av[4]);
-	data->dead = false;
+	data->is_dead = false;
 	if (ac == 6)
 		data->eat_count = atost(av[5]);
 	return (check_input(data, ac));

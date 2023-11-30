@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/29 17:41:02 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 18:00:51 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ struct timeval	current_time(void)
  * @param philo
  * @return size_t
  */
-bool	die_time_check(struct timeval start, t_philo *philo)
+bool	die_time_check(t_philo *philo)
 {
-	pthread_mutex_lock(philo->data->mutexes.eat);
-	if (curr_time_diff(start) >= philo->data->time_to_die)
-		return (pthread_mutex_unlock(philo->data->mutexes.eat), false);
-	pthread_mutex_unlock(philo->data->mutexes.eat);
+	pthread_mutex_lock(&philo->data->eat);
+	if (curr_time_diff(philo->last_eaten) >= philo->data->time_to_die)
+		return (pthread_mutex_unlock(&philo->data->eat), false);
+	pthread_mutex_unlock(&philo->data->eat);
 	return (true);
 }
 
@@ -59,12 +59,11 @@ void	wait_for(t_philo *philo, size_t time)
 {
 	struct timeval	start;
 
-	(void)philo;
 	start = current_time();
 	while (curr_time_diff(start) < time)
 	{
 		if (check_death(philo))
 			return ;
-		usleep(time / 10);
+		usleep(250);
 	}
 }

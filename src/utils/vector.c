@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:57:15 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/29 17:59:46 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 17:44:11 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 bool	check_death(t_philo *philo)
 {
-	pthread_mutex_lock(philo->data->mutexes.dead);
-	if (philo->data->dead)
-		return (pthread_mutex_unlock(philo->data->mutexes.dead), true);
-	pthread_mutex_unlock(philo->data->mutexes.dead);
+	pthread_mutex_lock(&philo->data->dead);
+	if (philo->data->is_dead)
+		return (pthread_mutex_unlock(&philo->data->dead), true);
+	pthread_mutex_unlock(&philo->data->dead);
 	return (false);
 }
 

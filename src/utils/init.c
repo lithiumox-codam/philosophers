@@ -6,51 +6,39 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/29 17:44:23 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/11/30 17:50:28 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-pthread_mutex_t	*init_mutex(void)
-{
-	pthread_mutex_t	*mutex;
-
-	mutex = malloc(sizeof(pthread_mutex_t));
-	if (!mutex)
-		return (NULL);
-	pthread_mutex_init(mutex, NULL);
-	return (mutex);
-}
-
 bool	initialize_mutexes(t_data *data)
 {
-	t_mutexes		*tmp;
-	size_t			i;
-	pthread_mutex_t	*fork;
+	size_t	i;
 
-	tmp = &data->mutexes;
+	// t_mutexes	*tmp;
+	// pthread_mutex_t	*fork;
+	// tmp = &data->mutexes;
 	i = 0;
-	tmp->print = init_mutex();
-	tmp->dead = init_mutex();
-	tmp->eat = init_mutex();
-	tmp->start = init_mutex();
-	tmp->forks = malloc(sizeof(t_vector));
-	if (!tmp->print || !tmp->dead || !tmp->eat)
-		return (print_error("Initialization of mutexes failed!", NULL), false);
-	if (!tmp->forks || !vec_init(tmp->forks, data->philo_count,
-			sizeof(pthread_mutex_t), free_mutex))
+	pthread_mutex_init(&data->print, NULL);
+	pthread_mutex_init(&data->dead, NULL);
+	pthread_mutex_init(&data->eat, NULL);
+	pthread_mutex_init(&data->start, NULL);
+	data->forks = calloc(sizeof(pthread_mutex_t), (data->philo_count));
+	// if (!data->print || !data->dead || !data->eat)
+	// 	return (print_error("Initialization of mutexes failed!", NULL), false);
+	if (!data->forks)
 		return (print_error("Initialization of forks vector failed!", NULL),
 			false);
 	while (i < data->philo_count)
 	{
-		fork = malloc(sizeof(pthread_mutex_t));
-		pthread_mutex_init(fork, NULL);
-		if (!fork)
-			return (false);
-		vec_push(tmp->forks, fork);
+		pthread_mutex_init(&data->forks[i], NULL);
+		// if (!fork[i])
+		// 	return (false);
+		// tmp->forks[i] = fork;
 		i++;
 	}
+	// tmp->forks[i] = NULL;
 	return (true);
 }
 
@@ -58,25 +46,24 @@ static bool	init_philos(t_data *data)
 {
 	t_philo	*philo;
 
-	data->philos = malloc(sizeof(t_vector));
-	if (!data->philos || !vec_init(data->philos, data->philo_count,
-			sizeof(t_philo), NULL))
+	data->philos = malloc(sizeof(t_philo) * data->philo_count);
+	if (!data->philos)
 		return (false);
 	while (data->philos_created < data->philo_count)
 	{
-		philo = (t_philo *)malloc(sizeof(t_philo));
+		philo = &data->philos[data->philos_created];
 		if (!philo)
 			return (print_error("Allocation of philo failed!", NULL), false);
-		philo->id = data->philos_created;
-		philo->data = data;
-		philo->eat_count = 0;
-		philo->left_fork = vec_get(data->mutexes.forks, philo->id);
-		philo->right_fork = vec_get(data->mutexes.forks, (philo->id + 1)
-				% data->philo_count);
-		if (!vec_push(data->philos, philo))
-			return (print_error("Vector push failed with philo!", NULL), false);
+		data->philos[data->philos_created].id = data->philos_created;
+		data->philos[data->philos_created].data = data;
+		data->philos[data->philos_created].eat_count = 0;
+		data->philos[data->philos_created].left_fork = &data->forks[data->philos_created];
+		data->philos[data->philos_created].right_fork = &data->forks[(data->philos_created
+				+ 1) % data->philo_count];
+		// data->philos[data->philos_created] = philo;
 		data->philos_created++;
 	}
+	// data->philos[data->philos_created] = NULL;
 	return (true);
 }
 

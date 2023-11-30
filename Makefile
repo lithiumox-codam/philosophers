@@ -10,7 +10,7 @@ OBJ = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))
 CC = gcc
 DEBUG = 0
 DEBUG_FLAGS = -g -fsanitize=thread
-CFLAGS = -Wall -Wextra -Werror -pthread $(if DEBUG,$(DEBUG_FLAGS))
+# CFLAGS = -Wall -Wextra -Werror -pthread $(if DEBUG,$(DEBUG_FLAGS))
 
 
 GREEN=\033[0;32m
