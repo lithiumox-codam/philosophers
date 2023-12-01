@@ -8,7 +8,7 @@ SRCS = $(addsuffix .c, $(FILES))
 OBJ = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))
 CC = gcc
 DEBUG = 0
-DEBUG_FLAGS = -g -fsanitize=thread
+DEBUG_FLAGS = -pg
 CFLAGS = -Wall -Wextra -Werror -pthread $(if DEBUG,$(DEBUG_FLAGS))
 
 

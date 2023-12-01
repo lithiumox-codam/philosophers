@@ -30,11 +30,12 @@ size_t	get_time(void)
  */
 bool	die_time_check(t_philo *philo)
 {
+	bool	result;
+
 	pthread_mutex_lock(&philo->lock);
-	if (curr_time_diff(philo->last_eaten) >= philo->data->time_to_die)
-		return (pthread_mutex_unlock(&philo->lock), false);
+	result = curr_time_diff(philo->last_eaten) < philo->data->time_to_die;
 	pthread_mutex_unlock(&philo->lock);
-	return (true);
+	return (result);
 }
 
 size_t	curr_time_diff(size_t start)
@@ -49,8 +50,10 @@ size_t	curr_time_diff(size_t start)
 void	wait_for(size_t time)
 {
 	size_t	start;
+	size_t	fraction;
 
 	start = get_time();
+	fraction = time / 4;
 	while (curr_time_diff(start) < time)
-		usleep(250);
+		usleep(fraction);
 }

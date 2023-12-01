@@ -48,7 +48,7 @@ static void	monitor(t_data *data)
 				change_death(&data->philos[i]);
 				pthread_mutex_lock(&data->print);
 				printf("%zu %zu died\n", curr_time_diff(data->start_time),
-						data->philos[i].id + 1);
+					data->philos[i].id + 1);
 				pthread_mutex_unlock(&data->print);
 				close_all(data);
 				cleanup(data);
@@ -56,12 +56,8 @@ static void	monitor(t_data *data)
 			}
 			i++;
 		}
-		usleep(1000);
+		// usleep(1000);
 	}
-	// pthread_mutex_unlock(philos[i]->data->print);
-	// printf("All philosophers have eaten %zu times\n",
-	// 	philos[i]->data->eat_count);
-	// pthread_mutex_unlock(philos[i]->data->print);
 }
 
 void	run_simulation(t_data *data)
