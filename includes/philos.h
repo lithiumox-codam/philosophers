@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 20:18:58 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/01 00:47:15 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,6 @@
 # include <unistd.h>
 
 # define DEBUG false
-
-/**
- * @brief The struct containing all mutexes
- *
- * @param forks The mutexes representing the forks
- * @param print The mutex used for printing
- * @param dead_mutex The mutex used to check if a philosopher has died
- * @param eat_mutex The mutex used to check if a philosopher has eaten
- * @param eat_count_mutex The mutex used to check if a philosopher has eaten
- * enough
- * @note The mutexes are stored in a vector, so they can be accessed by id
- */
-typedef struct s_mutexes
-{
-	pthread_mutex_t		*forks;
-	pthread_mutex_t		print;
-	pthread_mutex_t		dead;
-	pthread_mutex_t		eat;
-	pthread_mutex_t		start;
-	pthread_mutex_t		*philos_created;
-}						t_mutexes;
 
 typedef struct s_data	t_data;
 
@@ -123,12 +102,13 @@ bool					take_forks(t_philo *philo);
 void					drop_forks(t_philo *philo);
 void					cleanup(t_data *data);
 bool					check_death(t_philo *philo);
+
 /**
  * Time functions
  */
 size_t					get_time(void);
 size_t					curr_time_diff(size_t start);
-void					wait_for(t_philo *philo, size_t time);
+void					wait_for(size_t time);
 bool					die_time_check(t_philo *philo);
 
 #endif

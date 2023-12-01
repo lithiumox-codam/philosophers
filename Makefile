@@ -1,16 +1,15 @@
-NAME = philosophers
-VEC_FILES = vec_apply vec_free vec_insert vec_remove vec_set vec_count vec_get vec_pop vec_replace vec_find vec_init vec_push vec_resize ft_mem ft_strcmp
-FILES = main utils/init utils/vector utils/print utils/atost structs/philo utils/time debug/index utils/parse philos/index structs/mutex utils/cleanup $(VEC_FILES)
+NAME = philo
+FILES = main utils/init utils/forks utils/print utils/atost structs/philo utils/time utils/parse philos/index structs/mutex utils/cleanup
 SRC_DIR = src
 INCLUDES = -I includes
 BUILD_DIR = build
-vpath %.c $(SRC_DIR) $(SRC_DIR)/vector
+vpath %.c $(SRC_DIR)
 SRCS = $(addsuffix .c, $(FILES))
 OBJ = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))
 CC = gcc
 DEBUG = 0
 DEBUG_FLAGS = -g -fsanitize=thread
-# CFLAGS = -Wall -Wextra -Werror -pthread $(if DEBUG,$(DEBUG_FLAGS))
+CFLAGS = -Wall -Wextra -Werror -pthread $(if DEBUG,$(DEBUG_FLAGS))
 
 
 GREEN=\033[0;32m

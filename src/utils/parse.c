@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 22:57:32 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 17:53:59 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/01 01:17:26 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ static bool	check_input(t_data *data, int ac)
 	bool	no_error;
 
 	no_error = true;
-	if (data->philo_count == 0 || data->philo_count > 2047)
-		print_error("Philo maximum is 2047", &no_error);
+	if (data->philo_count == 0 || data->philo_count > 200)
+		print_error("Philo maximum is 200", &no_error);
 	if (data->time_to_die == 0 || data->time_to_die > 2147483647)
 		print_error("Invalid time to die", &no_error);
 	if (data->time_to_eat == 0 || data->time_to_eat > 2147483647)
@@ -59,17 +59,19 @@ static bool	check_input(t_data *data, int ac)
  */
 static bool	check_strings(int ac, char **av)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
+	char	*str;
 
+	str = "Numeric arguments only!";
 	i = 1;
 	while (i < ac)
 	{
 		j = 0;
 		while (av[i][j])
 		{
-			if ((av[i][j] >= '0' && av[i][j] <= '9') || j > 10)
-				return (false);
+			if (!(av[i][j] >= '0' && av[i][j] <= '9'))
+				return (print_error(str, NULL), false);
 			j++;
 		}
 		i++;
@@ -90,7 +92,7 @@ static bool	check_strings(int ac, char **av)
  */
 bool	parse_input(t_data *data, int ac, char **av)
 {
-	if (check_strings(ac, av))
+	if (!check_strings(ac, av))
 		return (false);
 	data->philo_count = atost(av[1]);
 	data->time_to_die = atost(av[2]);
@@ -98,6 +100,9 @@ bool	parse_input(t_data *data, int ac, char **av)
 	data->time_to_sleep = atost(av[4]);
 	data->is_dead = false;
 	if (ac == 6)
+	{
 		data->eat_count = atost(av[5]);
+		data->track_eating = true;
+	}
 	return (check_input(data, ac));
 }

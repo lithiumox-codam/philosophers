@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 20:23:27 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/01 00:46:13 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ size_t	curr_time_diff(size_t start)
  * @brief Function to wait for a semi certain amount of time
  * @param time The time to wait in milliseconds
  */
-void	wait_for(t_philo *philo, size_t time)
+void	wait_for(size_t time)
 {
 	size_t	start;
 

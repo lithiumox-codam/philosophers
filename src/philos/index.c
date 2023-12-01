@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 20:32:39 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/01 00:47:27 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static bool	philo_eat(t_philo *philo)
 		return (false);
 	if (!print_status(philo, "is eating"))
 		return (drop_forks(philo), false);
-	wait_for(philo, philo->data->time_to_eat);
+	wait_for(philo->data->time_to_eat);
 	drop_forks(philo);
 	pthread_mutex_lock(&philo->lock);
 	philo->last_eaten = get_time();
@@ -43,7 +43,7 @@ static bool	philo_sleep(t_philo *philo)
 {
 	if (!print_status(philo, "is sleeping"))
 		return (false);
-	wait_for(philo, philo->data->time_to_sleep);
+	wait_for(philo->data->time_to_sleep);
 	if (!print_status(philo, "is thinking"))
 		return (false);
 	return (true);

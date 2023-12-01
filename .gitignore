@@ -1,3 +1,6 @@
 ./philophers
 build/*
 test.txt
+out
+philophers
+philo

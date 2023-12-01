@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 20:22:47 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/01 00:40:21 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	monitor(t_data *data)
 				change_death(&data->philos[i]);
 				pthread_mutex_lock(&data->print);
 				printf("%zu %zu died\n", curr_time_diff(data->start_time),
-					data->philos[i].id + 1);
+						data->philos[i].id + 1);
 				pthread_mutex_unlock(&data->print);
 				close_all(data);
 				cleanup(data);
@@ -93,8 +93,8 @@ int	main(int ac, char **av)
 {
 	t_data	*data;
 
-	memset(&data, 0, sizeof(t_data));
 	data = malloc(sizeof(t_data));
+	memset(data, 0, sizeof(t_data));
 	//   data.mutexes = calloc(1, sizeof(t_mutexes));
 	data->is_dead = false;
 	if (ac < 5 || ac > 6)
