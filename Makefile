@@ -1,4 +1,4 @@
-NAME = philo
+NAME = philosophers
 FILES = main utils/init utils/forks utils/print utils/atost structs/philo utils/time utils/parse philos/index structs/mutex utils/cleanup
 SRC_DIR = src
 INCLUDES = -I includes
@@ -8,8 +8,8 @@ SRCS = $(addsuffix .c, $(FILES))
 OBJ = $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRCS))
 CC = gcc
 DEBUG = 0
-DEBUG_FLAGS = -pg
-CFLAGS = -Wall -Wextra -Werror -pthread $(if DEBUG,$(DEBUG_FLAGS))
+DEBUG_FLAGS = -g
+CFLAGS = -Wall -Wextra -Werror $(if DEBUG,$(DEBUG_FLAGS))
 
 
 GREEN=\033[0;32m

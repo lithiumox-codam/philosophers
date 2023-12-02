@@ -6,28 +6,38 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/11/27 12:30:07 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/11/30 17:38:46 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 20:58:47 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-// static void	clean_mutexes(t_mutexes *mutexes)
-// {
-// 	// pthread_mutex_destroy(print);
-// 	// pthread_mutex_destroy(dead);
-// 	// pthread_mutex_destroy(eat);
-// 	free(print);
-// 	free(dead);
-// 	free(eat);
-// }
+static void	clean_mutexes(t_data *data)
+{
+	pthread_mutex_destroy(&data->print);
+	pthread_mutex_destroy(&data->dead);
+	pthread_mutex_destroy(&data->eat);
+	pthread_mutex_destroy(&data->start);
+}
 
 void	cleanup(t_data *data)
 {
+	size_t	i;
+
 	// (void)data;
-	pthread_mutex_lock(&data->dead);
-	data->is_dead = true;
-	pthread_mutex_unlock(&data->dead);
-	// clean_mutexes(&data->mutexes);
-	exit(0);
+	i = 0;
+	while (i < data->philo_count)
+	{
+		pthread_mutex_destroy(&data->philos[i].lock);
+		i++;
+	}
+	i = 0;
+	while (i < data->philo_count)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+	free(data->forks);
+	free(data->philos);
+	clean_mutexes(data);
 }

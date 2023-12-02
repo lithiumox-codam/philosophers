@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/02 17:34:36 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 20:41:39 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,8 @@ size_t	curr_time_diff(size_t start)
 void	wait_for(size_t time)
 {
 	size_t	start;
-	size_t	fraction;
 
 	start = get_time();
-	fraction = time / 4;
 	while ((get_time() - start) < time)
-		usleep(fraction);
+		usleep(250);
 }

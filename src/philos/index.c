@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/01 00:47:27 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 20:33:30 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ static bool	philo_sleep(t_philo *philo)
 	if (!print_status(philo, "is sleeping"))
 		return (false);
 	wait_for(philo->data->time_to_sleep);
-	if (!print_status(philo, "is thinking"))
-		return (false);
 	return (true);
 }
 
@@ -63,13 +61,15 @@ void	philo_loop(t_philo *philo)
 	{
 		if (!print_status(philo, "is thinking"))
 			return ;
-		usleep(philo->data->time_to_eat / 2 * 1000);
+		usleep((philo->data->time_to_eat / 2) * 1000);
 	}
 	while (1)
 	{
 		if (!philo_eat(philo))
 			return ;
 		if (!philo_sleep(philo))
+			return ;
+		if (!print_status(philo, "is thinking"))
 			return ;
 	}
 }

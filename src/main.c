@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/01 00:40:21 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 20:52:08 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,10 @@ static void	close_all(t_data *data)
 {
 	size_t	i;
 
-	// t_philo	*philo;
 	i = 0;
 	while (i < data->philo_count)
 	{
-		// if (data->philos[i]->thread)
 		pthread_join(data->philos[i].thread, NULL);
-		// free_philo(data->philos[i]);
 		i++;
 	}
 }
@@ -43,6 +40,9 @@ static void	monitor(t_data *data)
 		i = 0;
 		while (i < data->philo_count)
 		{
+			if (data->eat_count != 0
+				&& data->philos[i].eat_count == data->eat_count)
+				data->philos_eaten++;
 			if (!die_time_check(&data->philos[i]))
 			{
 				change_death(&data->philos[i]);
@@ -54,9 +54,20 @@ static void	monitor(t_data *data)
 				cleanup(data);
 				return ;
 			}
+			if (data->eat_count != 0 && data->philos_eaten == data->philo_count)
+			{
+				change_death(&data->philos[i]);
+				pthread_mutex_lock(&data->print);
+				printf("All philosophers have eaten %zu times\n",
+					data->eat_count);
+				pthread_mutex_unlock(&data->print);
+				close_all(data);
+				cleanup(data);
+				return ;
+			}
 			i++;
 		}
-		// usleep(1000);
+		usleep(1000);
 	}
 }
 
@@ -64,8 +75,16 @@ void	run_simulation(t_data *data)
 {
 	size_t	i;
 
-	// t_philo	*philo;
 	i = 0;
+	if (data->philo_count == 1)
+	{
+		pthread_mutex_lock(data->philos[0].left_fork);
+		printf("%zu %zu has taken a fork\n", i, data->philos[0].id + 1);
+		pthread_mutex_unlock(data->philos[0].left_fork);
+		wait_for(data->time_to_die);
+		printf("%zu %zu died\n", data->time_to_die, data->philos[0].id + 1);
+		return ;
+	}
 	pthread_mutex_lock(&data->start);
 	while (i < data->philo_count)
 	{
@@ -91,13 +110,11 @@ int	main(int ac, char **av)
 
 	data = malloc(sizeof(t_data));
 	memset(data, 0, sizeof(t_data));
-	//   data.mutexes = calloc(1, sizeof(t_mutexes));
-	data->is_dead = false;
 	if (ac < 5 || ac > 6)
 		return (print_error("Wrong amount of arguments", NULL), 1);
 	if (!init(data, ac, av))
 		return (1);
 	run_simulation(data);
-	printf("Simulation done\n");
+	free(data);
 	return (0);
 }

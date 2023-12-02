@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 22:57:32 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/01 01:17:26 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 20:27:00 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static bool	check_input(t_data *data, int ac)
 		print_error("Invalid time to eat", &no_error);
 	if (data->time_to_sleep == 0 || data->time_to_sleep > 2147483647)
 		print_error("Invalid time to sleep", &no_error);
-	if (ac > 5 && (data->eat_count > 2147483647))
+	if (ac > 5 && ((data->eat_count > 2147483647) || data->eat_count == 0))
 		print_error("Invalid number of times to eat", &no_error);
 	return (no_error);
 }
@@ -100,9 +100,6 @@ bool	parse_input(t_data *data, int ac, char **av)
 	data->time_to_sleep = atost(av[4]);
 	data->is_dead = false;
 	if (ac == 6)
-	{
 		data->eat_count = atost(av[5]);
-		data->track_eating = true;
-	}
 	return (check_input(data, ac));
 }

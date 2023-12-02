@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/01 00:47:15 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 19:12:18 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,9 @@ typedef struct s_data
 	size_t				time_to_eat;
 	size_t				time_to_sleep;
 	size_t				eat_count;
-	bool				track_eating;
+	bool				eatcap;
 	bool				is_dead;
-	size_t				philo_eaten;
+	size_t				philos_eaten;
 	t_philo				*philos;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		print;
