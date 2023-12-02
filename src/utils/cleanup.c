@@ -12,6 +12,18 @@
 
 #include <philos.h>
 
+void	clean_created_philo(t_data *data)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < data->philo_count)
+	{
+		pthread_join(data->philos[i].thread, NULL);
+		i++;
+	}
+}
+
 static void	clean_mutexes(t_data *data)
 {
 	pthread_mutex_destroy(&data->print);
@@ -24,7 +36,6 @@ void	cleanup(t_data *data)
 {
 	size_t	i;
 
-	// (void)data;
 	i = 0;
 	while (i < data->philo_count)
 	{

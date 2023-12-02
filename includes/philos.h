@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/02 19:12:18 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/03 00:00:50 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,26 +88,26 @@ typedef struct s_data
 /**
  * Functions
  */
-pthread_mutex_t			*init_mutex(void);
 void					philo_loop(t_philo *philo);
+void					singular_philo(t_data *data);
 size_t					atost(char *str);
 bool					init(t_data *data, int ac, char **av);
 bool					parse_input(t_data *data, int ac, char **av);
 void					print_error(char *error_msg, bool *error);
-void					free_mutex(void *mutexes);
-void					free_philo(void *philo);
 bool					print_status(t_philo *philo, char *msg);
 size_t					start_diff(t_philo *philo);
 bool					take_forks(t_philo *philo);
 void					drop_forks(t_philo *philo);
 void					cleanup(t_data *data);
 bool					check_death(t_philo *philo);
+void					close_all(t_data *data);
+void					kill_created_philos(t_data *data, size_t i);
 
 /**
  * Time functions
  */
 size_t					get_time(void);
-size_t					curr_time_diff(size_t start);
+size_t					curr_time_diff(size_t stamp);
 void					wait_for(size_t time);
 bool					die_time_check(t_philo *philo);
 

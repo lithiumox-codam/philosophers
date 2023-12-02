@@ -6,12 +6,18 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 22:57:32 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/02 20:27:00 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 23:51:00 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
+/**
+ * @brief Prints an error message
+ *
+ * @param error_msg The error message to print
+ * @param error A pointer to the error flag (optional)
+ */
 void	print_error(char *error_msg, bool *error)
 {
 	printf("\033[1;31mERROR: %s\033[0m\n", error_msg);
@@ -40,7 +46,7 @@ static bool	check_input(t_data *data, int ac)
 		print_error("Invalid time to eat", &no_error);
 	if (data->time_to_sleep == 0 || data->time_to_sleep > 2147483647)
 		print_error("Invalid time to sleep", &no_error);
-	if (ac > 5 && ((data->eat_count > 2147483647) || data->eat_count == 0))
+	if (ac == 6 && ((data->eat_count > 2147483647) || data->eat_count == 0))
 		print_error("Invalid number of times to eat", &no_error);
 	return (no_error);
 }
@@ -61,9 +67,9 @@ static bool	check_strings(int ac, char **av)
 {
 	int		i;
 	int		j;
-	char	*str;
+	char	*num;
 
-	str = "Numeric arguments only!";
+	num = "Numeric arguments only!";
 	i = 1;
 	while (i < ac)
 	{
@@ -71,7 +77,7 @@ static bool	check_strings(int ac, char **av)
 		while (av[i][j])
 		{
 			if (!(av[i][j] >= '0' && av[i][j] <= '9'))
-				return (print_error(str, NULL), false);
+				return (print_error(num, NULL), false);
 			j++;
 		}
 		i++;

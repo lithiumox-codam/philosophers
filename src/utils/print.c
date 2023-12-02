@@ -6,14 +6,17 @@
 /*   By: lithium <lithium@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/07 22:42:36 by lithium       #+#    #+#                 */
-/*   Updated: 2023/11/30 20:21:57 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/03 00:25:33 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
 /**
- * @brief Prints the status of the philosopher based on the state enum
+ * @brief Prints the status of the philosopher if it is not dead
+ *
+ * @note The function checks if a philosopher is dead before printing
+ * because no other thread should be able to print if a philosopher is dead
  *
  * @param philo The philosopher
  */

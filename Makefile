@@ -1,5 +1,5 @@
 NAME = philosophers
-FILES = main utils/init utils/forks utils/print utils/atost structs/philo utils/time utils/parse philos/index structs/mutex utils/cleanup
+FILES = main philo utils/init utils/forks utils/print utils/atost utils/time utils/parse utils/cleanup utils/sim_helpers
 SRC_DIR = src
 INCLUDES = -I includes
 BUILD_DIR = build
@@ -23,7 +23,7 @@ $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) $(INCLUDES) -o $(NAME)
 	@echo "\n$(GREEN)Compilation completed for $(NAME) 🎉 $(NC)\n"
 
-$(BUILD_DIR)/%.o: %.c
+$(BUILD_DIR)/%.o: %.c includes/philos.h
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 	@echo "$(YELLOW) ✅ Compiled $< $(NC)"

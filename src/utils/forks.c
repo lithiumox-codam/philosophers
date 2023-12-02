@@ -12,6 +12,12 @@
 
 #include <philos.h>
 
+/**
+ * @brief Checks if a philosopher is dead by checking the is_dead flag
+ *
+ * @param philo The philosopher to access the data struct from
+ * @return bool Whether the philosopher is dead
+ */
 bool	check_death(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->dead);
@@ -21,6 +27,12 @@ bool	check_death(t_philo *philo)
 	return (false);
 }
 
+/**
+ * @brief Takes the forks from the table
+ *
+ * @param philo The philosopher to take the forks
+ * @return bool Whether the forks were taken successfully
+ */
 bool	take_forks(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
@@ -32,6 +44,11 @@ bool	take_forks(t_philo *philo)
 	return (true);
 }
 
+/**
+ * @brief A wrapper function for dropping the forks
+ *
+ * @param philo The philosopher to drop the forks
+ */
 void	drop_forks(t_philo *philo)
 {
 	pthread_mutex_unlock(philo->left_fork);

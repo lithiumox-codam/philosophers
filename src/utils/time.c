@@ -12,6 +12,11 @@
 
 #include <philos.h>
 
+/**
+ * @brief Get the time in milliseconds
+ *
+ * @return size_t The time in milliseconds
+ */
 size_t	get_time(void)
 {
 	struct timeval	now;
@@ -38,9 +43,15 @@ bool	die_time_check(t_philo *philo)
 	return (result);
 }
 
-size_t	curr_time_diff(size_t start)
+/**
+ * @brief A function that returns the difference between the start time and
+ * the current time
+ * @param stamp The start time
+ * @return size_t
+ */
+size_t	curr_time_diff(size_t stamp)
 {
-	return (get_time() - start);
+	return (get_time() - stamp);
 }
 
 /**

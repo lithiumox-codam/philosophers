@@ -6,33 +6,108 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/02 19:33:06 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/03 00:23:59 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-bool	initialize_mutexes(t_data *data)
+/**
+ * @brief A helper function to initialize the mutexes that are globally used
+ * and clean them up if the initialization of one fails
+ *
+ * @param mutexes The mutexes to initialize
+ * @return bool Whether the initialization was successful
+ */
+static bool	init_and_clean_mutexes(t_data *data)
 {
-	size_t	i;
+	size_t			i;
+	size_t			j;
+	pthread_mutex_t	*mutexes[4];
 
 	i = 0;
-	pthread_mutex_init(&data->print, NULL);
-	pthread_mutex_init(&data->dead, NULL);
-	pthread_mutex_init(&data->eat, NULL);
-	pthread_mutex_init(&data->start, NULL);
-	data->forks = calloc(sizeof(pthread_mutex_t), (data->philo_count));
-	if (!data->forks)
-		return (print_error("Initialization of forks vector failed!", NULL),
-			false);
-	while (i < data->philo_count)
+	mutexes[0] = &data->print;
+	mutexes[1] = &data->dead;
+	mutexes[2] = &data->eat;
+	mutexes[3] = &data->start;
+	while (i < 4)
 	{
-		pthread_mutex_init(&data->forks[i], NULL);
+		if (pthread_mutex_init(mutexes[i], NULL))
+		{
+			j = 0;
+			while (j < i)
+			{
+				pthread_mutex_destroy(mutexes[j]);
+				j++;
+			}
+			return (false);
+		}
 		i++;
 	}
 	return (true);
 }
 
+/**
+ * @brief Initializes the mutexes
+ *
+ * @param data The data struct to initialize
+ * @return bool Whether the initialization was successful
+ */
+static bool	initialize_mutexes(t_data *data)
+{
+	size_t	i;
+
+	i = 0;
+	if (!init_and_clean_mutexes(data))
+		return (print_error("Mutex init fail!", NULL), false);
+	data->forks = calloc(sizeof(pthread_mutex_t), (data->philo_count));
+	if (!data->forks)
+		return (print_error("Forks init fail!", NULL), false);
+	while (i < data->philo_count)
+	{
+		if (pthread_mutex_init(&data->forks[i], NULL))
+		{
+			while (i > 0)
+			{
+				pthread_mutex_destroy(&data->forks[i]);
+				i--;
+			}
+			return (print_error("Forks mutex init fail!", NULL), false);
+		}
+		i++;
+	}
+	return (true);
+}
+
+/**
+ * @brief Assigns the forks to the philosopher
+ *
+ * @param philo The philosopher to assign the forks to
+ * @note The first philosopher will have the right fork first
+ * so there are no potential deadlocks
+ */
+static void	assign_forks(t_philo *philo)
+{
+	if (philo->id != 0)
+	{
+		philo->left_fork = &philo->data->forks[philo->id];
+		philo->right_fork = &philo->data->forks[(philo->id + 1)
+			% philo->data->philo_count];
+	}
+	else
+	{
+		philo->left_fork = &philo->data->forks[(philo->id + 1)
+			% philo->data->philo_count];
+		philo->right_fork = &philo->data->forks[philo->id];
+	}
+}
+
+/**
+ * @brief Initializes the philosophers
+ *
+ * @param data The data struct to initialize
+ * @return bool Whether the initialization was successful
+ */
 static bool	init_philos(t_data *data)
 {
 	t_philo	*philo;
@@ -47,9 +122,7 @@ static bool	init_philos(t_data *data)
 		philo->data = data;
 		philo->eat_count = 0;
 		pthread_mutex_init(&data->philos[data->philos_created].lock, NULL);
-		philo->left_fork = &data->forks[data->philos_created];
-		philo->right_fork = &data->forks[(data->philos_created + 1)
-			% data->philo_count];
+		assign_forks(philo);
 		data->philos_created++;
 	}
 	return (true);

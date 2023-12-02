@@ -6,31 +6,51 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/02 20:52:08 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/03 00:02:51 by lithium       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
 
-static void	close_all(t_data *data)
+/**
+ * @brief A helper function for the die mechanism so the program can exit
+ *
+ * @param data
+ * @param i
+ */
+static void	die_helper(t_data *data, size_t i)
 {
-	size_t	i;
-
-	i = 0;
-	while (i < data->philo_count)
-	{
-		pthread_join(data->philos[i].thread, NULL);
-		i++;
-	}
+	pthread_mutex_lock(&data->dead);
+	data->is_dead = true;
+	pthread_mutex_unlock(&data->dead);
+	pthread_mutex_lock(&data->print);
+	printf("%zu %zu died\n", curr_time_diff(data->start_time),
+		data->philos[i].id + 1);
+	pthread_mutex_unlock(&data->print);
+	close_all(data);
+	cleanup(data);
 }
 
-static void	change_death(t_philo *philo)
+/**
+ * @brief A helper function for the eat mechanism so the program can exit
+ *
+ * @param data The data struct
+ */
+static void	eat_helper(t_data *data)
 {
-	pthread_mutex_lock(&philo->data->dead);
-	philo->data->is_dead = true;
-	pthread_mutex_unlock(&philo->data->dead);
+	pthread_mutex_lock(&data->dead);
+	data->is_dead = true;
+	pthread_mutex_unlock(&data->dead);
+	close_all(data);
+	cleanup(data);
 }
 
+/**
+ * @brief The monitor function that checks if the philosophers are still alive
+ * and if the eat count has been reached by all philosophers if applicable
+ *
+ * @param data The data struct
+ */
 static void	monitor(t_data *data)
 {
 	size_t	i;
@@ -44,53 +64,34 @@ static void	monitor(t_data *data)
 				&& data->philos[i].eat_count == data->eat_count)
 				data->philos_eaten++;
 			if (!die_time_check(&data->philos[i]))
-			{
-				change_death(&data->philos[i]);
-				pthread_mutex_lock(&data->print);
-				printf("%zu %zu died\n", curr_time_diff(data->start_time),
-					data->philos[i].id + 1);
-				pthread_mutex_unlock(&data->print);
-				close_all(data);
-				cleanup(data);
-				return ;
-			}
+				return (die_helper(data, i));
 			if (data->eat_count != 0 && data->philos_eaten == data->philo_count)
-			{
-				change_death(&data->philos[i]);
-				pthread_mutex_lock(&data->print);
-				printf("All philosophers have eaten %zu times\n",
-					data->eat_count);
-				pthread_mutex_unlock(&data->print);
-				close_all(data);
-				cleanup(data);
-				return ;
-			}
+				return (eat_helper(data));
 			i++;
 		}
 		usleep(1000);
 	}
 }
 
+/**
+ * @brief The function that runs the simulation and creates the threads
+ *
+ * @param data The data struct
+ */
 void	run_simulation(t_data *data)
 {
 	size_t	i;
 
 	i = 0;
 	if (data->philo_count == 1)
-	{
-		pthread_mutex_lock(data->philos[0].left_fork);
-		printf("%zu %zu has taken a fork\n", i, data->philos[0].id + 1);
-		pthread_mutex_unlock(data->philos[0].left_fork);
-		wait_for(data->time_to_die);
-		printf("%zu %zu died\n", data->time_to_die, data->philos[0].id + 1);
-		return ;
-	}
+		return (singular_philo(data), cleanup(data));
 	pthread_mutex_lock(&data->start);
 	while (i < data->philo_count)
 	{
 		if (pthread_create(&data->philos[i].thread, NULL, (void *)philo_loop,
 				(void *)&data->philos[i]) != 0)
-			return (print_error("Failed to create thread", NULL));
+			return (print_error("Failed to create threads", NULL),
+				kill_created_philos(data, i), cleanup(data));
 		i++;
 	}
 	data->start_time = get_time();
@@ -108,12 +109,14 @@ int	main(int ac, char **av)
 {
 	t_data	*data;
 
-	data = malloc(sizeof(t_data));
-	memset(data, 0, sizeof(t_data));
 	if (ac < 5 || ac > 6)
 		return (print_error("Wrong amount of arguments", NULL), 1);
+	data = malloc(sizeof(t_data));
+	if (!data)
+		return (print_error("Data malloc failed!", NULL), 1);
+	memset(data, 0, sizeof(t_data));
 	if (!init(data, ac, av))
-		return (1);
+		return (free(data), 1);
 	run_simulation(data);
 	free(data);
 	return (0);
