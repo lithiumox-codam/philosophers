@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/09/02 16:20:23 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/01 00:46:13 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/02 17:34:36 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	die_time_check(t_philo *philo)
 	bool	result;
 
 	pthread_mutex_lock(&philo->lock);
-	result = curr_time_diff(philo->last_eaten) < philo->data->time_to_die;
+	result = (get_time() - philo->last_eaten) < philo->data->time_to_die;
 	pthread_mutex_unlock(&philo->lock);
 	return (result);
 }
@@ -54,6 +54,6 @@ void	wait_for(size_t time)
 
 	start = get_time();
 	fraction = time / 4;
-	while (curr_time_diff(start) < time)
+	while ((get_time() - start) < time)
 		usleep(fraction);
 }
