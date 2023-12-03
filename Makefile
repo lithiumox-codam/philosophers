@@ -1,4 +1,4 @@
-NAME = philosophers
+NAME = philo
 FILES = main philo utils/init utils/forks utils/print utils/atost utils/time utils/parse utils/cleanup utils/sim_helpers
 SRC_DIR = src
 INCLUDES = -I includes

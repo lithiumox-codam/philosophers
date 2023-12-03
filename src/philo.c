@@ -1,16 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   index.c                                            :+:    :+:            */
+/*   philo.c                                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/02 20:33:30 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/03 16:58:05 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philos.h>
+
+/**
+ * @brief A fuction that help create a waiting queue for the philosophers
+ * so they dont grab forks immediately when they have enough time to live
+ *
+ * @param philo The philosopher to check
+ */
+static void	check_time_gap(t_philo *philo)
+{
+	size_t	time_gap;
+	size_t	eat_diff;
+
+	if (philo->data->start_time == philo->last_eaten)
+		return ;
+	pthread_mutex_lock(&philo->lock);
+	time_gap = get_time() - philo->last_eaten;
+	eat_diff = philo->data->time_to_die - philo->data->time_to_eat;
+	if (time_gap < eat_diff)
+		wait_for(philo->data->time_to_eat);
+	pthread_mutex_unlock(&philo->lock);
+}
 
 /**
  * @brief The eat state of the philosopher
@@ -65,6 +86,8 @@ void	philo_loop(t_philo *philo)
 	}
 	while (1)
 	{
+		if (philo->data->philo_count == 3)
+			check_time_gap(philo);
 		if (!philo_eat(philo))
 			return ;
 		if (!philo_sleep(philo))
