@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 13:49:11 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/03 00:00:50 by lithium       ########   odam.nl         */
+/*   Updated: 2023/12/03 14:18:29 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void					cleanup(t_data *data);
 bool					check_death(t_philo *philo);
 void					close_all(t_data *data);
 void					kill_created_philos(t_data *data, size_t i);
-
+void					clean_mutexes(t_data *data, bool forks);
 /**
  * Time functions
  */

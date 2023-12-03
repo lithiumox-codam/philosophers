@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 20:54:54 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/03 00:23:59 by lithium       ########   odam.nl         */
+/*   Updated: 2023/12/03 15:12:02 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,15 @@ static bool	init_philos(t_data *data)
 		philo->id = data->philos_created;
 		philo->data = data;
 		philo->eat_count = 0;
-		pthread_mutex_init(&data->philos[data->philos_created].lock, NULL);
+		if (pthread_mutex_init(&data->philos[data->philos_created].lock, NULL))
+		{
+			while (data->philos_created > 0)
+			{
+				pthread_mutex_destroy(&data->philos[data->philos_created].lock);
+				data->philos_created--;
+			}
+			return (print_error("Philosopher mutex init fail!", NULL), false);
+		}
 		assign_forks(philo);
 		data->philos_created++;
 	}
@@ -141,6 +149,6 @@ bool	init(t_data *data, int ac, char **av)
 	if (!initialize_mutexes(data))
 		return (false);
 	if (!init_philos(data))
-		return (false);
+		return (clean_mutexes(data, true), false);
 	return (true);
 }
