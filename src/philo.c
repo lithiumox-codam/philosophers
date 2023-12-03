@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 21:04:17 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/03 16:58:05 by mdekker       ########   odam.nl         */
+/*   Updated: 2023/12/03 17:51:20 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	philo_loop(t_philo *philo)
 	}
 	while (1)
 	{
-		if (philo->data->philo_count == 3)
+		if (philo->data->philo_count % 2 != 0)
 			check_time_gap(philo);
 		if (!philo_eat(philo))
 			return ;
