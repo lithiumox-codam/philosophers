@@ -6,7 +6,7 @@
 /*   By: mdekker <mdekker@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/03 14:08:36 by mdekker       #+#    #+#                 */
-/*   Updated: 2023/12/03 00:02:51 by lithium       ########   odam.nl         */
+/*   Updated: 2023/12/17 15:54:32 by mdekker       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,11 @@ static void	monitor(t_data *data)
 		i = 0;
 		while (i < data->philo_count)
 		{
+			pthread_mutex_lock(&philo->lock);
 			if (data->eat_count != 0
 				&& data->philos[i].eat_count == data->eat_count)
 				data->philos_eaten++;
+			pthread_mutex_unlock(&philo->lock);
 			if (!die_time_check(&data->philos[i]))
 				return (die_helper(data, i));
 			if (data->eat_count != 0 && data->philos_eaten == data->philo_count)
@@ -83,8 +85,6 @@ void	run_simulation(t_data *data)
 	size_t	i;
 
 	i = 0;
-	if (data->philo_count == 1)
-		return (singular_philo(data), cleanup(data));
 	pthread_mutex_lock(&data->start);
 	while (i < data->philo_count)
 	{
@@ -94,6 +94,8 @@ void	run_simulation(t_data *data)
 				kill_created_philos(data, i), cleanup(data));
 		i++;
 	}
+	if (data->philo_count == 1)
+		return (singular_philo(data), cleanup(data));
 	data->start_time = get_time();
 	i = 0;
 	while (i < data->philo_count)
